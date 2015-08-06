@@ -17,19 +17,19 @@ public class WaterDetection : Photon.MonoBehaviour
 
     }
 
-    void OnCollisionEnter(Collision col)
+    void OnTriggerEnter(Collider col)
     {
-        if (col.collider.gameObject.tag == "Player")
+        if (col.gameObject.tag == "Player")
         {
-            col.collider.GetComponent<MageController>().waterEffect = true;
+            col.GetComponent<MageController>().waterEffect = true;
         }
     }
 
-    void OnCollisionExit(Collision col)
+    void OnTriggerExit(Collider col)
     {
-        if (col.collider.gameObject.tag == "Player")
+        if (col.gameObject.gameObject.tag == "Player")
         {
-            col.collider.GetComponent<MageController>().waterEffect = false;
+            col.GetComponent<MageController>().waterEffect = false;
         }
     }
 }

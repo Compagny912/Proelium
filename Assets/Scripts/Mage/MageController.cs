@@ -182,7 +182,7 @@ namespace UnityStandardAssets.Scripts.Mage
                     m_Jumping = true;
                     m_anim.SetBool("OnTheAir", true);
                 }
-			}
+			}           
 
 			else
 			{
