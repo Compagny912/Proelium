@@ -18,7 +18,7 @@ public class Attack2 : StateMachineBehaviour {
         animator.SetBool("onAttack2", false);
         onAttack2.attackrealised = false;
 	}
-
+	//
 	// OnStateIK is called right after Animator.OnAnimatorIK(). Code that sets up animation IK (inverse kinematics) should be implemented here.
 	//override public void OnStateIK(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
 	//
