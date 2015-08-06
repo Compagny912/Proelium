@@ -4,7 +4,6 @@ using System.Collections;
 public class Score : Photon.MonoBehaviour {
 
 	public Transform personnage;
-    public GameObject player;
 	public string equipe;
 	public static bool estMort = true;
 	public string pseudo;
@@ -68,13 +67,18 @@ public class Score : Photon.MonoBehaviour {
                 Cursor.visible = false;
 
 				if(equipe == "rouge"){
-                    player = PhotonNetwork.Instantiate(personnage.name, spawn_rouge[aleatoire].transform.position, spawn_rouge[aleatoire].transform.rotation, 0);
+                    GameObject player = PhotonNetwork.Instantiate(personnage.name, spawn_rouge[aleatoire].transform.position, spawn_rouge[aleatoire].transform.rotation, 0);
+
+                    player.name = pseudo;
+                    player.GetComponent<Animator>().SetBool("IsDead", false);
                 }
 				if(equipe == "bleu"){
-                    player = PhotonNetwork.Instantiate(personnage.name, spawn_bleu[aleatoire].transform.position, spawn_bleu[aleatoire].transform.rotation, 0);
+                    GameObject player = PhotonNetwork.Instantiate(personnage.name, spawn_bleu[aleatoire].transform.position, spawn_bleu[aleatoire].transform.rotation, 0);
+
+                    player.name = pseudo;
+                    player.GetComponent<Animator>().SetBool("IsDead", false);
                 }
-                player.name = pseudo;
-                player.GetComponent<Animator>().SetBool("IsDead", false);
+                
 				estMort = false;
                 
 			}

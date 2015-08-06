@@ -4,7 +4,6 @@ using System.Collections;
 public class onAttack1 : Photon.MonoBehaviour {
 
     Animator anim;
-    GameObject go;
     GameObject player;
     public static bool attackrealised = true;
 
@@ -25,7 +24,12 @@ public class onAttack1 : Photon.MonoBehaviour {
     }
     void attack()
     {
-        go = PhotonNetwork.Instantiate("MageAttack1", new Vector3(GetComponent<Rigidbody>().transform.position.x, GetComponent<Rigidbody>().transform.position.y + 0.5f, GetComponent<Rigidbody>().transform.position.z), this.GetComponentInChildren<Camera>().transform.rotation, 0);
-        go.name = "Fireball";
+        GameObject go = PhotonNetwork.Instantiate(
+            "MageAttack1", 
+            new Vector3(GetComponent<Rigidbody>().transform.position.x, 
+                GetComponent<Rigidbody>().transform.position.y + 0.5f, 
+                GetComponent<Rigidbody>().transform.position.z), 
+            this.GetComponentInChildren<Camera>().transform.rotation, 0);
+        go.name = player.name;
     }
 }

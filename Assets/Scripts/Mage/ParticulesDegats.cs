@@ -18,7 +18,7 @@ public class ParticulesDegats : Photon.MonoBehaviour {
     void OnParticleCollision(GameObject other)
     {
         other.SendMessage("sendDamage", degats, SendMessageOptions.DontRequireReceiver);
-        other.SendMessage("getLastDegats", other.name, SendMessageOptions.DontRequireReceiver);
+        other.SendMessage("getLastDegats", this.gameObject.name, SendMessageOptions.DontRequireReceiver);
     }
 
 }

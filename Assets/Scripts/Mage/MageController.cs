@@ -346,9 +346,18 @@ namespace UnityStandardAssets.Scripts.Mage
 					StopAllCoroutines ();
 					StartCoroutine (!m_IsWalking ? m_FovKick.FOVKickUp () : m_FovKick.FOVKickDown ());
 				}
-			} else {
-			//WHEN THE PLAYER IS DEAD !!!
-			}
+
+            }
+            else if (PauseMenuGUI.pausemenu != "")
+            {
+                m_anim.SetInteger("AxeX", 0);
+                m_anim.SetInteger("AxeY", 0);
+                speed = 0;
+            }
+            else
+            {
+                //WHEN THE PLAYER IS DEAD !!!
+            }
 		}
 		
 		private void RotateView()
