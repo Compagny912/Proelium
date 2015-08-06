@@ -164,7 +164,7 @@ namespace UnityStandardAssets.Scripts.Mage
 					m_anim.SetBool("Attack1", true);
 				}
 
-                if ((Input.GetAxis("Fire2") > 0 && m_anim.GetBool("onAttack1") == false) && PauseMenuGUI.pausemenu == "")
+                else if ((Input.GetAxis("Fire2") > 0 && m_anim.GetBool("onAttack1") == false) && PauseMenuGUI.pausemenu == "")
                 {
 					m_anim.SetBool("Attack2", true);
 				}
