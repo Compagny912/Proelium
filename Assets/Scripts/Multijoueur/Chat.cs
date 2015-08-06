@@ -35,7 +35,7 @@ public class Chat : Photon.MonoBehaviour {
             {
                 if (!string.IsNullOrEmpty(this.texteChat) || GUI.GetNameOfFocusedControl() == "texte")
                 {
-                    GUI.FocusControl(null);
+                    GUI.FocusControl(null); 
                     texteModifie = pseudo + ": " + texteChat;
                     GetComponent<PhotonView>().RPC("RafraichirChat", PhotonTargets.All, texteModifie);
                     texteChat = "";

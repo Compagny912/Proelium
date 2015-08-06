@@ -169,38 +169,14 @@ namespace UnityStandardAssets.Scripts.Mage
 					m_anim.SetBool("Attack2", true);
 				}
 
-                if (m_Jump && m_CharacterController.isGrounded && !m_Jumping)
+                if (m_Jump && !m_Jumping)
                 {
                     m_MoveDir.y = m_JumpSpeed;
                     
                     m_Jump = false;
 
-                    if(m_anim.GetInteger("AxeX") == 0){
-                        previousStateBeforeJump[0] = 0;
-                    }
-                    if (m_anim.GetInteger("AxeX") == -10)
-                    {
-                        previousStateBeforeJump[0] = -10;
-                    }
-                    if (m_anim.GetInteger("AxeX") == 10){
-                        previousStateBeforeJump[0] = 10;
-                    }
-                    if (m_anim.GetInteger("AxeX") == 20)
-                    {
-                        previousStateBeforeJump[0] = 20;
-                    }
-                    if (m_anim.GetInteger("AxeY") == 0)
-                    {
-                        previousStateBeforeJump[1] = 0;
-                    }
-                    if (m_anim.GetInteger("AxeY") == -1)
-                    {
-                        previousStateBeforeJump[1] = -1;
-                    }
-                    if (m_anim.GetInteger("AxeY") == 1)
-                    {
-                        previousStateBeforeJump[1] = 1;
-                    }
+                    previousStateBeforeJump[0] = m_anim.GetInteger("AxeX");
+                    previousStateBeforeJump[1] = m_anim.GetInteger("AxeY");
 
                     PlayJumpSound();
                     m_Jumping = true;
@@ -326,21 +302,27 @@ namespace UnityStandardAssets.Scripts.Mage
                     return;
                 }
 
-                /////////////////
-
                 if (vertical == 0)
                 {
                     m_anim.SetInteger("AxeX", 0);
                 }
+
+                if (vertical > 0)
+                {
+                    m_anim.SetInteger("AxeX", speed == m_WalkSpeed ? 10 : 20);
+                }
+
+                if (vertical < 0)
+                {
+                    speed = m_WalkSpeed;
+                    m_anim.SetInteger("AxeX", -10);
+                }
+
+
                 if (horizontal == 0)
                 {
                     m_anim.SetInteger("AxeY", 0);
                 }
-
-                if (vertical < 0) {
-					speed = m_WalkSpeed;
-                    m_anim.SetInteger("AxeX", -10);
-				}
 
                 if (horizontal < 0)
                 {
@@ -352,16 +334,7 @@ namespace UnityStandardAssets.Scripts.Mage
                     m_anim.SetInteger("AxeY", 1);
                     //speed = m_RunSpeed;
                 }
-				if (speed == m_WalkSpeed) {
-					m_anim.SetInteger ("AxeX", 10);
-				}
 
-				if (speed == m_RunSpeed) {
-					m_anim.SetInteger ("AxeX", 20);
-				}
-
-				
-			
 				// normalize input if it exceeds 1 in combined length:
 				if (m_Input.sqrMagnitude > 1) {
 					m_Input.Normalize ();
