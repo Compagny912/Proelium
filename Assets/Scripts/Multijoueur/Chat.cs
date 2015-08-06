@@ -33,12 +33,12 @@ public class Chat : Photon.MonoBehaviour {
 
             if (Event.current.type == EventType.KeyDown && (Event.current.keyCode == KeyCode.KeypadEnter || Event.current.keyCode == KeyCode.Return))
             {
-                if (!string.IsNullOrEmpty(this.texteChat))
+                if (!string.IsNullOrEmpty(this.texteChat) || GUI.GetNameOfFocusedControl() == "texte")
                 {
+                    GUI.FocusControl(null);
                     texteModifie = pseudo + ": " + texteChat;
                     GetComponent<PhotonView>().RPC("RafraichirChat", PhotonTargets.All, texteModifie);
                     texteChat = "";
-                    GUI.FocusControl(null);
                     return;
                 }
                 else
