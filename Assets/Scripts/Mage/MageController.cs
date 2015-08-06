@@ -11,7 +11,6 @@ namespace UnityStandardAssets.Scripts.Mage
 	[RequireComponent(typeof (AudioSource))]
 	public class MageController : Photon.MonoBehaviour
 	{
-
 		[SerializeField] private bool m_IsWalking;
 		[SerializeField] private float m_WalkSpeed;
 		[SerializeField] private float m_RunSpeed;
