@@ -9,6 +9,7 @@ public class Connexion : Photon.MonoBehaviour {
 	public GameObject chat;
 	public GameObject score;
 	public GUISkin style;
+    public bool validName;
     public static Language defaultLanguage = Language.French;
 	
 	void Awake(){
@@ -19,6 +20,8 @@ public class Connexion : Photon.MonoBehaviour {
 
     void Start()
     {
+
+
         if (PlayerPrefs.GetString("Langage") == "French")
         {
             defaultLanguage = Language.French;
@@ -30,13 +33,16 @@ public class Connexion : Photon.MonoBehaviour {
         LanguageManager.LoadLanguageFile(defaultLanguage);
         PhotonNetwork.ConnectUsingSettings("Version 1.0.1");
         PhotonNetwork.automaticallySyncScene = true;
+        validName = true;
     }
 
     void OnGUI()
     {
+
         if (PhotonNetwork.insideLobby == true && isLoadingScene == false && menu != "")
         {
             GUI.Label(new Rect(Screen.width / 2 - 405, Screen.height / 2 - 250, 810, 30), LanguageManager.GetText("menuMultijoueur"), style.customStyles[0]);
+            
             GUI.Label(new Rect(Screen.width / 2 - 75, Screen.height / 2 + 250, 480, 30), "", style.customStyles[0]);
 
             //PSEUDO
@@ -84,9 +90,18 @@ public class Connexion : Photon.MonoBehaviour {
         {
             GUI.Label(new Rect(Screen.width / 2 - 150, Screen.height / 2 - 30, 300, 60), LanguageManager.GetText("levelLoading") + GetConnectingDots(), style.label);
         }
+
+        if (!validName)
+        {
+            GUI.Label(new Rect(Screen.width / 2 + 200, Screen.height / 2 - 195, 400, 10), "Nom Invalide ...", style.label);
+        }
+        else if (validName)
+        {
+            PhotonNetwork.player.name = pseudoJoueur;
+        }
 	}
-	
-	void OnCreatedRoom(){
+
+    void OnCreatedRoom(){
 		chat.SendMessage("Connecte", pseudoJoueur);
 		score.SendMessage("GetName", pseudoJoueur);
 	}
@@ -101,7 +116,7 @@ public class Connexion : Photon.MonoBehaviour {
     string GetConnectingDots()
     {
         string str = "";
-        int numberOfDots = Mathf.FloorToInt(Time.timeSinceLevelLoad * 3f % 4);
+        int numberOfDots = 3;
 
         for (int i = 0; i < numberOfDots; ++i)
         {

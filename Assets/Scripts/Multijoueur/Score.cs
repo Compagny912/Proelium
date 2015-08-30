@@ -1,3 +1,5 @@
+#pragma warning disable 618
+
 using UnityEngine;
 using System.Collections;
 
@@ -48,10 +50,12 @@ public class Score : Photon.MonoBehaviour {
                 if (GUI.Button(new Rect(Screen.width / 2 - 150, Screen.height / 2 - 15, 100, 50), LanguageManager.GetText("equipeRouge"), skin.button))
                 {
 					equipe = "rouge";
+                    //PhotonNetwork.player.SetTeam(PunTeams.Team.red);
 					chat.SendMessage("Equipe", equipe);
 				}
 				if(GUI.Button(new Rect(Screen.width/2+50, Screen.height/2-15, 100, 50), LanguageManager.GetText("equipeBleu"), skin.button)){
 					equipe = "bleu";
+                    //PhotonNetwork.player.SetTeam(PunTeams.Team.blue);
 					chat.SendMessage("Equipe", equipe);
 				}
 			}
@@ -67,18 +71,28 @@ public class Score : Photon.MonoBehaviour {
                 Cursor.visible = false;
 
 				if(equipe == "rouge"){
-                    GameObject player = PhotonNetwork.Instantiate(personnage.name, spawn_rouge[aleatoire].transform.position, spawn_rouge[aleatoire].transform.rotation, 0);
 
-                    player.name = pseudo;
+                    GameObject player = (GameObject) PhotonNetwork.Instantiate(personnage.name, spawn_rouge[aleatoire].transform.position, spawn_rouge[aleatoire].transform.rotation, 0);
+
+                    string[] donnee = new string[2];
+                    donnee[0] = player.name;
+                    donnee[1] = pseudo;
+                    GetComponent<PhotonView>().RPC("RefreshName", PhotonTargets.AllBuffered, donnee);
+
                     player.GetComponent<Animator>().SetBool("IsDead", false);
                 }
 				if(equipe == "bleu"){
-                    GameObject player = PhotonNetwork.Instantiate(personnage.name, spawn_bleu[aleatoire].transform.position, spawn_bleu[aleatoire].transform.rotation, 0);
+                    
+                    GameObject player = (GameObject) PhotonNetwork.Instantiate(personnage.name, spawn_bleu[aleatoire].transform.position, spawn_bleu[aleatoire].transform.rotation, 0);
 
-                    player.name = pseudo;
+                    string[] donnee = new string[2];
+                    donnee[0] = player.name;
+                    donnee[1] = pseudo;
+                    GetComponent<PhotonView>().RPC("RefreshName", PhotonTargets.AllBuffered, donnee);
+
                     player.GetComponent<Animator>().SetBool("IsDead", false);
                 }
-                
+
 				estMort = false;
                 
 			}
@@ -111,5 +125,14 @@ public class Score : Photon.MonoBehaviour {
         {
             gameIsStart = false;
         }
+    }
+
+    [PunRPC]
+    void RefreshName(string[] donnee){
+
+        GameObject go;
+        
+        go = GameObject.Find(donnee[0]);
+        go.name = donnee[1];
     }
 }

@@ -75,7 +75,6 @@ namespace UnityStandardAssets.Scripts.Mage
 				GetComponent<CharacterController>().enabled = false;
 				GetComponent<AudioSource>().enabled = false;
 				GetComponent<MageController>().enabled = false;
-                GetComponent<MageHealthScript>().enabled = false;
                 //GetComponent<NetworkCharacter>().enabled = false;
 
 				//CAMERAS

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class ServerList : Photon.MonoBehaviour {
@@ -32,7 +32,9 @@ public class ServerList : Photon.MonoBehaviour {
 		if (Connexion.menu == "listeServeurs" && PhotonNetwork.insideLobby == true)
         {
 
+            GUI.color = new Color(1.0f, 1.0f, 1.0f, 0.4f);
             GUI.Label(new Rect(Screen.width / 2 - 405, Screen.height / 2 - 250, 810, 530), "", Skin.window);
+            GUI.color = Color.white;
 
             if (GUI.Button(new Rect(Screen.width / 2 - 405, Screen.height / 2 + 250, 330, 30), "<color=orange>" + LanguageManager.GetText("rejoindreUnePartie") + "</color>", Skin.button) && this.GetComponent<Connexion>().pseudoJoueur.Length >= 3)
             {
@@ -67,21 +69,10 @@ public class ServerList : Photon.MonoBehaviour {
                     }
                 }
             }
-            if (PhotonNetwork.GetRoomList().Length != 0)
+            if (PhotonNetwork.GetRoomList().Length == 0)
             {
                 GUILayout.Label(LanguageManager.GetText("noServeur"), GUILayout.Width(300));
             }
-			/*GUILayout.Label("Aucuns serveurs ouvert\nLancez-en un ...", GUILayout.Width(300));
-			GUILayout.Label("Aucuns serveurs ouvert\nLancez-en un ...", GUILayout.Width(300));
-			GUILayout.Label("Aucuns serveurs ouvert\nLancez-en un ...", GUILayout.Width(300));
-			GUILayout.Label("Aucuns serveurs ouvert\nLancez-en un ...", GUILayout.Width(300));
-			GUILayout.Label("Aucuns serveurs ouvert\nLancez-en un ...", GUILayout.Width(300));
-			GUILayout.Label("Aucuns serveurs ouvert\nLancez-en un ...", GUILayout.Width(300));
-			GUILayout.Label("Aucuns serveurs ouvert\nLancez-en un ...", GUILayout.Width(300));
-			GUILayout.Label("Aucuns serveurs ouvert\nLancez-en un ...", GUILayout.Width(300));
-			GUILayout.Label("Aucuns serveurs ouvert\nLancez-en un ...", GUILayout.Width(300));
-			GUILayout.Label("Aucuns serveurs ouvert\nLancez-en un ...", GUILayout.Width(300));
-			GUILayout.Label("Aucuns serveurs ouvert\nLancez-en un ...", GUILayout.Width(300));*/
 
             GUILayout.EndScrollView();
 

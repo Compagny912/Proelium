@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class PauseMenuGUI : Photon.MonoBehaviour {
@@ -65,7 +65,10 @@ public class PauseMenuGUI : Photon.MonoBehaviour {
         {
             if (pausemenu == "pause")
             {
+                GUI.color = new Color(1.0f, 1.0f, 1.0f, 0.6f);
                 GUI.Label(new Rect(Screen.width / 2 - 200, Screen.height / 2 - 200, 400, 400), LanguageManager.GetText("menu"), style.window);
+                GUI.color = Color.white;
+
                 if (GUI.Button(new Rect(Screen.width / 2 - 150, Screen.height / 2 + 120, 300, 30), LanguageManager.GetText("options")))
                 {
                     pausemenu = "options";
@@ -80,7 +83,9 @@ public class PauseMenuGUI : Photon.MonoBehaviour {
 
             if (pausemenu == "options")
             {
+                GUI.color = new Color(1.0f, 1.0f, 1.0f, 0.6f);
                 GUI.Label(new Rect(Screen.width / 2 - 300, Screen.height / 2 - 150, 600, 400), LanguageManager.GetText("options"), style.window);
+                GUI.color = Color.white;
 
                 if (GUI.Button(new Rect(Screen.width / 2 - 285, Screen.height / 2 - 115, 280, 30), LanguageManager.GetText("langage") + " - " +
                     (defaultLanguage == Language.French ? LanguageManager.GetText("french") : "") +

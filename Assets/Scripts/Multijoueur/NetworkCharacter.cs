@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
-public class NetworkCharacter : MonoBehaviour {
+public class NetworkCharacter : Photon.MonoBehaviour {
 
     private float lastSynchronizationTime = 0f;
     public float syncDelay = 0f;
@@ -14,7 +14,7 @@ public class NetworkCharacter : MonoBehaviour {
     Animator anim;
 
 	void Start () {
-        
+
         anim = GetComponent<Animator>();
 	}
 

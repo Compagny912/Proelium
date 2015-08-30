@@ -1,17 +1,17 @@
-﻿using UnityEngine;
+#pragma warning disable 618
+
+using UnityEngine;
 using System.Collections;
 
 public class onAttack1 : Photon.MonoBehaviour {
 
     Animator anim;
-    GameObject player;
-    public static bool attackrealised = true;
+    public static bool attackrealised;
 
     void Start()
     {
         attackrealised = false;
-        anim = GetComponent<Animator>();
-        player = this.gameObject;
+        anim = this.GetComponent<Animator>();
     }
 
     void Update()
@@ -19,17 +19,24 @@ public class onAttack1 : Photon.MonoBehaviour {
         if (anim.GetBool("Attack1") == true && attackrealised == false)
         {
             attackrealised = true;
-            Invoke("attack", 0.5f);
+            this.Invoke("attack", 0.5f);
         }
     }
     void attack()
     {
-        GameObject go = PhotonNetwork.Instantiate(
+        GameObject go = (GameObject) PhotonNetwork.Instantiate(
             "MageAttack1", 
             new Vector3(GetComponent<Rigidbody>().transform.position.x, 
                 GetComponent<Rigidbody>().transform.position.y + 0.5f, 
                 GetComponent<Rigidbody>().transform.position.z), 
             this.GetComponentInChildren<Camera>().transform.rotation, 0);
-        go.name = player.name;
+
+        GetComponent<PhotonView>().RPC("RefreshName", PhotonTargets.AllBuffered, PhotonNetwork.playerName, go.name);
+    }
+
+    [PunRPC]
+    void RefreshName(string pseudo, string name)
+    {
+        GameObject.Find(name).name = pseudo;
     }
 }

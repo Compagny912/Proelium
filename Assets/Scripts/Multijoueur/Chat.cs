@@ -71,7 +71,7 @@ public class Chat : Photon.MonoBehaviour {
 		GetComponent<PhotonView>().RPC("RafraichirChat", PhotonTargets.All, texteEquipe);
 	}
 	
-	[RPC]
+	[PunRPC]
 	void RafraichirChat (string texte)
     {
 		ligneChat[6] = ligneChat[5];
