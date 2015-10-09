@@ -1,11 +1,13 @@
 #pragma warning disable 618
 
 using UnityEngine;
+using CodeStage.AntiCheat.ObscuredTypes;
 using System.Collections;
 
 public class onAttack1 : Photon.MonoBehaviour {
 
     Animator anim;
+    private ObscuredFloat time = 0.5f;
     public static bool attackrealised;
 
     void Start()
@@ -19,11 +21,12 @@ public class onAttack1 : Photon.MonoBehaviour {
         if (anim.GetBool("Attack1") == true && attackrealised == false)
         {
             attackrealised = true;
-            this.Invoke("attack", 0.5f);
+            this.Invoke("attack", time);
         }
     }
     void attack()
     {
+
         GameObject go = (GameObject) PhotonNetwork.Instantiate(
             "MageAttack1", 
             new Vector3(GetComponent<Rigidbody>().transform.position.x, 

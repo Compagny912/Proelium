@@ -4,18 +4,9 @@ using System.Collections;
 public class Filtres : Photon.MonoBehaviour {
 
 	public GUISkin style;
-    public static Language defaultLanguage = Language.French;
 
 	void Start () {
-        if (PlayerPrefs.GetString("Langage") == "French")
-        {
-            defaultLanguage = Language.French;
-        }
-        if (PlayerPrefs.GetString("Langage") == "English")
-        {
-            defaultLanguage = Language.English;
-        }
-        LanguageManager.LoadLanguageFile(defaultLanguage);
+
 	}
 
 	void Update () {

@@ -53,7 +53,6 @@ namespace UnityStandardAssets.Scripts.Mage
 		// Use this for initialization
 		private void Start()
 		{
-            previousStateBeforeJump = new int[2];
             GameObject mage = this.gameObject;
 			m_CharacterController = GetComponent<CharacterController>();
 			m_Camera = Camera.main;
@@ -106,15 +105,11 @@ namespace UnityStandardAssets.Scripts.Mage
 		// Update is called once per frame
 		private void Update()
 		{
-			if(m_anim.GetBool("IsDead") == true || PauseMenuGUI.pausemenu != ""){
-				
+			if(!m_anim.GetBool("IsDead") && PauseMenuGUI.pausemenu == ""){
+				RotateView();
 			}
-            else
-            {
-                RotateView();
-            }
 			// the jump state needs to read here to make sure it is not missed
-			if (!m_Jump) {
+			if (!m_Jump && !m_Jumping) {
 				m_Jump = CrossPlatformInputManager.GetButtonDown ("Jump");
 			}
 			if (!m_PreviouslyGrounded && m_CharacterController.isGrounded) {
@@ -159,27 +154,14 @@ namespace UnityStandardAssets.Scripts.Mage
 
                 m_MoveDir.y = -m_StickToGroundForce;
 
-				if ((Input.GetAxis("Fire1") > 0 && m_anim.GetBool("onAttack2") == false) && PauseMenuGUI.pausemenu == ""){
-					m_anim.SetBool("Attack1", true);
-				}
-
-                else if ((Input.GetAxis("Fire2") > 0 && m_anim.GetBool("onAttack1") == false) && PauseMenuGUI.pausemenu == "")
+                if (m_Jump && !m_Jumping && m_anim.GetBool("OnTheAir") == false)
                 {
-					m_anim.SetBool("Attack2", true);
-				}
-
-                if (m_Jump && !m_Jumping)
-                {
-                    m_MoveDir.y = m_JumpSpeed;
-                    
-                    m_Jump = false;
-
-                    previousStateBeforeJump[0] = m_anim.GetInteger("AxeX");
-                    previousStateBeforeJump[1] = m_anim.GetInteger("AxeY");
-
                     PlayJumpSound();
                     m_Jumping = true;
                     m_anim.SetBool("OnTheAir", true);
+
+                    m_MoveDir.y = m_JumpSpeed;
+                    m_Jump = false;
                 }
 			}           
 
@@ -289,17 +271,11 @@ namespace UnityStandardAssets.Scripts.Mage
 			#endif
 
 			// set the desired speed to be walking or running
-			if (m_anim.GetBool ("IsDead") == false && PauseMenuGUI.pausemenu == "") {
-
+			if (!m_anim.GetBool ("IsDead") && PauseMenuGUI.pausemenu == "") {
                 m_Input = new Vector2(horizontal, vertical);
                 /////////////////
-                if (m_anim.GetBool("OnTheAir"))
-                {
-                    m_anim.SetInteger("AxeX", previousStateBeforeJump[0]);
-                    m_anim.SetInteger("AxeY", previousStateBeforeJump[1]);
 
-                    return;
-                }
+                if (m_Jumping) return;
 
                 if (vertical == 0)
                 {
@@ -321,6 +297,13 @@ namespace UnityStandardAssets.Scripts.Mage
                 if (horizontal == 0)
                 {
                     m_anim.SetInteger("AxeY", 0);
+                }
+                
+                if (Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.Q))
+                {
+                    horizontal = 0;
+                    m_anim.SetInteger("AxeY", 0);
+                    return;
                 }
 
                 if (horizontal < 0)
@@ -367,10 +350,10 @@ namespace UnityStandardAssets.Scripts.Mage
 		private void OnControllerColliderHit(ControllerColliderHit hit)
 		{
 			Rigidbody body = hit.collider.attachedRigidbody;
-			//dont move the rigidbody if the character is on top of it
-			if (m_CollisionFlags == CollisionFlags.Below)
+            //dont move the rigidbody if the character is on top of it
+
+            if (m_CollisionFlags == CollisionFlags.Below)
 			{
-			
 				return;
 			}
 			
@@ -378,7 +361,23 @@ namespace UnityStandardAssets.Scripts.Mage
 			{
 				return;
 			}
-			body.AddForceAtPosition(m_CharacterController.velocity*0.1f, hit.point, ForceMode.Impulse);
+			body.AddForceAtPosition(m_CharacterController.velocity*10f, hit.point, ForceMode.Impulse);
 		}
+
+        private void Attaquer()
+        {
+            if (!m_anim.GetBool("IsDead"))
+            {
+                if ((Input.GetAxis("Fire1") > 0 && m_anim.GetBool("onAttack2") == false) && PauseMenuGUI.pausemenu == "")
+                {
+                    m_anim.SetBool("Attack1", true);
+                }
+
+                else if ((Input.GetAxis("Fire2") > 0 && m_anim.GetBool("onAttack1") == false) && PauseMenuGUI.pausemenu == "")
+                {
+                    m_anim.SetBool("Attack2", true);
+                }
+            }
+        }
 	}
 }

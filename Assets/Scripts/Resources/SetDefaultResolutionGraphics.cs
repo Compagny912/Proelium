@@ -1,4 +1,5 @@
 using UnityEngine;
+using CodeStage.AntiCheat.ObscuredTypes;
 using System.Collections;
 
 public class SetDefaultResolutionGraphics : Photon.MonoBehaviour {
@@ -6,17 +7,48 @@ public class SetDefaultResolutionGraphics : Photon.MonoBehaviour {
     public bool fullscreen;
     public string quality;
     public int qualityInt;
+    public static Language defaultLanguage = Language.French;
 
-	// Use this for initialization
-	void Start () {
+
+    // Use this for initialization
+    void Start () {
 
         fullscreen = (PlayerPrefs.GetInt("Fullscreen") == 0) ? false : true;
         quality = PlayerPrefs.GetString("Quality");
 
-        if (PlayerPrefs.GetFloat("MouseSensibility") == 0)
+        if (ObscuredPrefs.GetInt("MouseSensibility") == 0)
         {
-            PlayerPrefs.SetFloat("MouseSensibility", 5);
+            ObscuredPrefs.SetInt("MouseSensibility", 5);
         }
+
+        CursorGestion.setInvisible();
+
+        //_LANGUAGE_PARAMETER
+        switch (PlayerPrefs.GetString("Langage"))
+        {
+            case "French":
+                defaultLanguage = Language.French;
+                break;
+            case "English":
+                defaultLanguage = Language.English;
+                break;
+            case "Chinese":
+                defaultLanguage = Language.Chinese;
+                break;
+            case "Italian":
+                defaultLanguage = Language.Italian;
+                break;
+            case "Russian":
+                defaultLanguage = Language.Russian;
+                break;
+            case "Spanish":
+                defaultLanguage = Language.Spanish;
+                break;
+            default:
+                defaultLanguage = Language.French;
+                break;
+        }
+        LanguageManager.LoadLanguageFile(defaultLanguage);
 
         if (quality == "low")
         {
@@ -35,10 +67,5 @@ public class SetDefaultResolutionGraphics : Photon.MonoBehaviour {
             qualityInt = 3;
         }
         QualitySettings.SetQualityLevel(qualityInt);
-	}
-
-	// Update is called once per frame
-	void Update () {
-	
 	}
 }

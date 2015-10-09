@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using CodeStage.AntiCheat.ObscuredTypes;
 using UnityStandardAssets.CrossPlatformInput;
 
 namespace UnityStandardAssets.Scripts.Mage
@@ -12,7 +13,7 @@ namespace UnityStandardAssets.Scripts.Mage
         public float MaximumX = 90F;
         public bool smooth;
         public float smoothTime = 5f;
-
+        private float f;
 
         private Quaternion m_CharacterTargetRot;
         private Quaternion m_CameraTargetRot;
@@ -20,6 +21,7 @@ namespace UnityStandardAssets.Scripts.Mage
 
         public void Init(Transform character, Transform camera)
         {
+            f = ObscuredPrefs.GetInt("MouseSensibility");
             m_CharacterTargetRot = character.localRotation;
             m_CameraTargetRot = camera.localRotation;
         }
@@ -27,8 +29,8 @@ namespace UnityStandardAssets.Scripts.Mage
 
         public void LookRotation(Transform character, Transform camera)
         {
-            float yRot = Input.GetAxis("Mouse X") * PlayerPrefs.GetFloat("MouseSensibility");
-            float xRot = Input.GetAxis("Mouse Y") * (PlayerPrefs.GetInt("InverseAxeY") == 1 ? -PlayerPrefs.GetFloat("MouseSensibility") : PlayerPrefs.GetFloat("MouseSensibility"));
+            float yRot = Input.GetAxis("Mouse X") * f;
+            float xRot = Input.GetAxis("Mouse Y") * (PlayerPrefs.GetInt("InverseAxeY") == 1 ? -f : f);
 
             m_CharacterTargetRot *= Quaternion.Euler (0f, yRot, 0f);
             m_CameraTargetRot *= Quaternion.Euler (-xRot, 0f, 0f);

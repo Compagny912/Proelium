@@ -1,4 +1,5 @@
 using UnityEngine;
+using CodeStage.AntiCheat.ObscuredTypes;
 using System.Collections;
 
 public class PauseMenuGUI : Photon.MonoBehaviour {
@@ -15,25 +16,17 @@ public class PauseMenuGUI : Photon.MonoBehaviour {
     private Vector2 scrollLanguagePos = new Vector2();
 
     bool isFullScreen;
-    public static Language defaultLanguage = Language.French;
+    private Language defaultLanguage;
 
 	// Use this for initialization
 	void Start () {
+        defaultLanguage = LanguageManager.CurrentLanguage;
 
-        sensibility = (int) PlayerPrefs.GetFloat("MouseSensibility");
+        sensibility = ObscuredPrefs.GetInt("MouseSensibility");
 
         isOpenQuality = false;
         isOpenLanguage = false;
         isFullScreen = (PlayerPrefs.GetInt("FullScreen") == 0) ? false : true;
-        if (PlayerPrefs.GetString("Langage") == "French")
-        {
-            defaultLanguage = Language.French;
-        }
-        if (PlayerPrefs.GetString("Langage") == "English")
-        {
-            defaultLanguage = Language.English;
-        }
-        LanguageManager.LoadLanguageFile(defaultLanguage);
 	}
 	
 	// Update is called once per frame
@@ -48,11 +41,27 @@ public class PauseMenuGUI : Photon.MonoBehaviour {
             }
             else if (pausemenu == "pause")
             {
+                if(Score.gameState == enumGameState.InGame)
+                {
+                    CursorGestion.setInGame();
+                }
+                else
+                {
+                    CursorGestion.setInMenu();
+                }
+
                 pausemenu = "";
-                Connexion.menu = "listeServeurs";
+
+                if (Connexion.isLogged == false)
+                {
+                    Connexion.menu = "login";
+                }  else  {
+                    Connexion.menu = "listeServeurs";
+                } 
             }
             else if (pausemenu == "")
             {
+                CursorGestion.setInMenu();
                 pausemenu = "pause";
                 Connexion.menu = "";
             }
@@ -73,11 +82,27 @@ public class PauseMenuGUI : Photon.MonoBehaviour {
                 {
                     pausemenu = "options";
                 }
-
-                if (GUI.Button(new Rect(Screen.width / 2 - 150, Screen.height / 2 + 180, 300, 40), LanguageManager.GetText("quitter")))
+                if (PhotonNetwork.inRoom)
                 {
-                    Application.Quit();
-                    PlayerPrefs.Save();
+                    if (GUI.Button(new Rect(Screen.width / 2 - 150, Screen.height / 2 + 180, 300, 30), LanguageManager.GetText("quitterLeServeur")))
+                    {
+                        PlayerPrefs.Save();
+                        ObscuredPrefs.Save();
+                        PhotonNetwork.LeaveRoom();
+                        Destroy(GameObject.Find("Connection"));
+                        Destroy(GameObject.Find("Scripts"));
+                        Destroy(GameObject.Find("Canvas"));
+                        Application.LoadLevel(1);
+                    }
+                }
+                if (!PhotonNetwork.inRoom)
+                {
+                    if (GUI.Button(new Rect(Screen.width / 2 - 150, Screen.height / 2 + 180, 300, 30), LanguageManager.GetText("quitterLeJeu")))
+                    {
+                        Application.Quit();
+                        PlayerPrefs.Save();
+                        ObscuredPrefs.Save();
+                    }
                 }
             }
 
@@ -110,6 +135,8 @@ public class PauseMenuGUI : Photon.MonoBehaviour {
                 if (GUI.Button(new Rect(Screen.width / 2 - 290, Screen.height / 2 + 210, 580, 30), LanguageManager.GetText("retourAuMenu")))
                 {
                     pausemenu = "pause";
+                    ObscuredPrefs.Save();
+                    PlayerPrefs.Save();
                 }
 
                 if (GUI.Button(new Rect(Screen.width / 2 + 5, Screen.height / 2 - 115, 280, 30), LanguageManager.GetText("quality") + " - " + 
@@ -178,14 +205,14 @@ public class PauseMenuGUI : Photon.MonoBehaviour {
                     if (GUI.Button(new Rect(Screen.width / 2 - 285, Screen.height / 2 - 75, 30, 30), "-")  && sensibility > 1)
                     {
                         sensibility--;
-                        PlayerPrefs.SetFloat("MouseSensibility", sensibility);
+                        ObscuredPrefs.SetInt("MouseSensibility", sensibility);
                     }
                     GUI.Label(new Rect(Screen.width / 2 - 255, Screen.height / 2 - 75, 220, 30), LanguageManager.GetText("sensibility") + ": " + sensibility, style.button);
 
                     if (GUI.Button(new Rect(Screen.width / 2 - 35, Screen.height / 2 - 75, 30, 30), "+") && sensibility < 10)
                     {
                         sensibility++;
-                        PlayerPrefs.SetFloat("MouseSensibility", sensibility);
+                        ObscuredPrefs.SetInt("MouseSensibility", sensibility);
                     }
                 }
 

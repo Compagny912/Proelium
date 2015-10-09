@@ -1,4 +1,6 @@
 using UnityEngine;
+using CodeStage.AntiCheat.ObscuredTypes;
+
 using System.Collections;
 
 public class Chat : Photon.MonoBehaviour {
