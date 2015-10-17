@@ -51,25 +51,22 @@ public class Chat : Photon.MonoBehaviour {
 		}
 	}
 	
-	void Connecte(string nom)
+	void OnPhotonPlayerConnected(PhotonPlayer p)
     {
-		pseudo = nom;
-		nom = "Le joueur " + nom + " s'est connecté";
-		GetComponent<PhotonView>().RPC("RafraichirChat", PhotonTargets.All, nom);
+		GetComponent<PhotonView>().RPC("RafraichirChat", PhotonTargets.All, "Le joueur " + PhotonNetwork.playerName + " s'est connecté");
 	}
-	void Deconnecte(string monpseudo)
+
+    void OnPhotonPlayerDisconnected(PhotonPlayer p)
     {
-		pseudo = monpseudo;
-		pseudo = "Le joueur " + monpseudo + " s'est déconnecté";
-		GetComponent<PhotonView>().RPC("RafraichirChat", PhotonTargets.All, pseudo);
-	}
+        GetComponent<PhotonView>().RPC("RafraichirChat", PhotonTargets.All, "Le joueur " + PhotonNetwork.playerName + " s'est déconnecté");
+    }
     void Message(string message)
     {
         GetComponent<PhotonView>().RPC("RafraichirChat", PhotonTargets.All, message);
     }
 	
 	void Equipe(string couleur){
-		var texteEquipe = pseudo + " rejoins l'équipe: " + couleur;
+		var texteEquipe = PhotonNetwork.playerName + " rejoins l'équipe: " + couleur;
 		GetComponent<PhotonView>().RPC("RafraichirChat", PhotonTargets.All, texteEquipe);
 	}
 	

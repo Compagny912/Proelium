@@ -16,7 +16,6 @@ public class Score : Photon.MonoBehaviour {
 	public GameObject[] spawn_rouge;
 	public GameObject[] spawn_bleu;
 	public GUISkin skin;
-    public float timeBeforeStart = 120f;
     public static enumGameState gameState;
 
     void Start()
@@ -26,10 +25,6 @@ public class Score : Photon.MonoBehaviour {
 
     void Update()
     {
-        if (PhotonNetwork.room != null && (PhotonNetwork.room.playerCount == PhotonNetwork.room.maxPlayers))
-        {
-            PhotonNetwork.room.visible = false;
-        }
         if (GameObject.Find("CameraMainMenuBeforeSpawn") && cam == null)
         {
             cam = GameObject.Find("CameraMainMenuBeforeSpawn").GetComponent<Camera>();
@@ -49,17 +44,23 @@ public class Score : Photon.MonoBehaviour {
 
             Wait.isStart = false;
 
-            GUI.Box(new Rect(30, 25, 300, 50), LanguageManager.GetText("chooseATeam"), skin.customStyles[0]); //skin.window
-            if (GUI.Button(new Rect(Screen.width / 2 - 50, 25, 100, 50), LanguageManager.GetText("equipeRouge"), skin.button))
+            GUI.Box(new Rect(20, 25, 300, 50), LanguageManager.GetText("chooseATeam"), skin.customStyles[0]); //skin.window
+            if (GUI.Button(new Rect(Screen.width / 2 - 40, 25, 100, 50), LanguageManager.GetText("equipeRouge"), skin.button))
             {
                 equipe = "rouge";
-                //PhotonNetwork.player.SetTeam(PunTeams.Team.red);
+                PhotonNetwork.player.customProperties.Add("team", "red");
+                PhotonNetwork.player.customProperties.Add("kills", 0);
+                PhotonNetwork.player.customProperties.Add("death", 0);
+                PhotonNetwork.player.SetScore(0);
                 chat.SendMessage("Equipe", equipe);
             }
-            if (GUI.Button(new Rect(Screen.width / 2 + 75, 25, 100, 50), LanguageManager.GetText("equipeBleu"), skin.button))
+            if (GUI.Button(new Rect(Screen.width / 2 + 65, 25, 100, 50), LanguageManager.GetText("equipeBleu"), skin.button))
             {
                 equipe = "bleu";
-                //PhotonNetwork.player.SetTeam(PunTeams.Team.blue);
+                PhotonNetwork.player.customProperties.Add("team", "blue");
+                PhotonNetwork.player.customProperties.Add("kills", 0);
+                PhotonNetwork.player.customProperties.Add("death", 0);
+                PhotonNetwork.player.SetScore(0);
                 chat.SendMessage("Equipe", equipe);
             }
         }
@@ -73,50 +74,45 @@ public class Score : Photon.MonoBehaviour {
             GUI.color = new Color(1.0f, 1.0f, 1.0f, 0.6f);
             GUI.Label(new Rect(0, 0, Screen.width, 100), "", skin.customStyles[0]);
             GUI.color = Color.white;
-
-            if (GUI.Button(new Rect(Screen.width / 2 - 100, 25, 200, 50), LanguageManager.GetText("spawn"), skin.button))
-            {
-                var aleatoire = Random.Range(0, 2);
-
-                Cursor.visible = false;
-
-                if (equipe == "rouge")
+            if (RoundTime.IsItTimeYet) {
+                if (GUI.Button(new Rect(Screen.width / 2 - 100, 25, 200, 50), LanguageManager.GetText("spawn"), skin.button))
                 {
+                    var aleatoire = Random.Range(0, 2);
 
-                    GameObject player = PhotonNetwork.Instantiate(personnage.name, spawn_rouge[aleatoire].transform.position, spawn_rouge[aleatoire].transform.rotation, 0);
+                    Cursor.visible = false;
 
-                    cam.enabled = false;
-                    cam.GetComponent<AudioListener>().enabled = false;
+                    if (equipe == "rouge")
+                    {
 
-                    CursorGestion.setInGame();
+                        GameObject player = PhotonNetwork.Instantiate(personnage.name, spawn_rouge[aleatoire].transform.position, spawn_rouge[aleatoire].transform.rotation, 0);
 
-                    string[] donnee = new string[2];
-                    donnee[0] = player.name;
-                    donnee[1] = pseudo;
-                    GetComponent<PhotonView>().RPC("RefreshName", PhotonTargets.AllBuffered, donnee);
+                        cam.enabled = false;
+                        cam.GetComponent<AudioListener>().enabled = false;
 
-                    player.GetComponent<Animator>().SetBool("IsDead", false);
+                        CursorGestion.setInGame();
+
+                        GetComponent<PhotonView>().RPC("RefreshName", PhotonTargets.AllBuffered, pseudo);
+
+                        player.GetComponent<Animator>().SetBool("IsDead", false);
+                    }
+                    if (equipe == "bleu")
+                    {
+
+                        GameObject player = PhotonNetwork.Instantiate(personnage.name, spawn_bleu[aleatoire].transform.position, spawn_bleu[aleatoire].transform.rotation, 0);
+
+                        cam.enabled = false;
+                        cam.GetComponent<AudioListener>().enabled = false;
+
+                        CursorGestion.setInGame();
+
+                        GetComponent<PhotonView>().RPC("RefreshName", PhotonTargets.AllBuffered, pseudo);
+
+                        player.GetComponent<Animator>().SetBool("IsDead", false);
+                    }
+
+                    estMort = false;
+
                 }
-                if (equipe == "bleu")
-                {
-
-                    GameObject player = PhotonNetwork.Instantiate(personnage.name, spawn_bleu[aleatoire].transform.position, spawn_bleu[aleatoire].transform.rotation, 0);
-
-                    cam.enabled = false;
-                    cam.GetComponent<AudioListener>().enabled = false;
-
-                    CursorGestion.setInGame();
-
-                    string[] donnee = new string[2];
-                    donnee[0] = player.name;
-                    donnee[1] = pseudo;
-                    GetComponent<PhotonView>().RPC("RefreshName", PhotonTargets.AllBuffered, donnee);
-
-                    player.GetComponent<Animator>().SetBool("IsDead", false);
-                }
-
-                estMort = false;
-
             }
         }
     }

@@ -205,13 +205,7 @@ public class Connexion : Photon.MonoBehaviour {
         }
 	}
 
-    /*void OnCreatedRoom(){
-		chat.SendMessage("Connecte", pseudoJoueur);
-		score.SendMessage("GetName", pseudoJoueur);
-    }*/
-
 	void OnJoinedRoom(){
-		chat.SendMessage("Connecte", pseudoJoueur.ToString());
 		score.SendMessage("GetName", pseudoJoueur.ToString());
         isLoadingScene = false;
 	}
@@ -282,14 +276,13 @@ public class Connexion : Photon.MonoBehaviour {
             {
                 print(www.text);
 
-                StartCoroutine(CursorGestion.hitPlayer());
-
                 if (www.text == "0")
                 {
                     err = 0;
                     pseudoJoueur = name;
                     menu = "listeServeurs";
                     isLogged = true;
+                    PhotonNetwork.playerName = pseudoJoueur;
                     PhotonNetwork.player.name = pseudoJoueur;
                     CursorGestion.setInMenu();
                 }
@@ -310,6 +303,7 @@ public class Connexion : Photon.MonoBehaviour {
             pseudoJoueur = name;
             menu = "listeServeurs";
             isLogged = true;
+            PhotonNetwork.playerName = pseudoJoueur;
             PhotonNetwork.player.name = pseudoJoueur;
         }
     }

@@ -13,13 +13,21 @@ public class SyncValues : Photon.MonoBehaviour {
 
     void OnGUI()
     {
-
+        
     }
-    void OnJoinedRoom()
+    void OnPhotonPlayerConnected()
     {
         if (PhotonNetwork.room.playerCount <= 2)
         {
             showMessage.inputMessage("Waiting Other players ...");
+            print("hey");
+        }
+    }
+    void OnPhotonPlayerDisconnected()
+    {
+        if (PhotonNetwork.room.playerCount <= 2)
+        {
+            showMessage.inputMessage("Waiting Other players ..."); 
         }
     }
 }
