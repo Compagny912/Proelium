@@ -13,47 +13,95 @@ public class ScoreTable : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (PhotonNetwork.inRoom)
         {
-            isOpen = true;
-        }
-        if (Input.GetKeyUp(KeyCode.Tab))
-        {
-            isOpen = false;
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                isOpen = true;
+            }
+            if (Input.GetKeyUp(KeyCode.Tab))
+            {
+                isOpen = false;
+            }
         }
 	}
     void OnGUI()
     {
         if (isOpen)
         {
+            GUI.skin = this.skin;
 
-            GUILayout.BeginArea(new Rect(Screen.width/2 - 200, Screen.height/2 - 200, 190, 400));
-            foreach (PhotonPlayer pl in PhotonNetwork.playerList)
-            {
-                if(pl.customProperties["team"].ToString() == "red")
+            GUI.color = new Color(1.0f, 1.0f, 1.0f, 0.6f);
+            GUILayout.BeginArea(new Rect(Screen.width / 2 - 455, Screen.height / 2 - 250, 450, 500), skin.box);
+            GUI.color = Color.white;
+
+            GUI.Label(new Rect(0, 7, 450, 30), "", skin.window);
+
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            GUILayout.Label("<b><color=red>Rouges</color></b>");
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal((skin.label));
+            GUILayout.Label("Name");
+            GUILayout.Space(150);
+            GUILayout.FlexibleSpace();
+            GUILayout.Label("Kills");
+            GUILayout.FlexibleSpace();
+            GUILayout.Label("Deaths");
+            GUILayout.FlexibleSpace();
+            GUILayout.Label("Score");
+            GUILayout.EndHorizontal();
+
+            foreach (PhotonPlayer pl in PunTeams.PlayersPerTeam[PunTeams.Team.red])
                 {
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Name: " + pl.name);
-                    GUILayout.Label("Kills: " + pl.customProperties["kills"].ToString());
-                    GUILayout.Label("Deaths: " + pl.customProperties["death"].ToString());
-                    GUILayout.Label("Score: " + pl.GetScore());
-                    GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal(skin.label);
+                GUILayout.Label(pl.name);
+                GUILayout.FlexibleSpace();
+                GUILayout.Label(pl.customProperties["kills"].ToString());
+                GUILayout.FlexibleSpace();
+                GUILayout.Label(pl.customProperties["death"].ToString());
+                GUILayout.FlexibleSpace();
+                GUILayout.Label(pl.GetScore()+"");
+                GUILayout.EndHorizontal();
                 }
-            }
             GUILayout.EndArea();
 
-            GUILayout.BeginArea(new Rect(Screen.width / 2 + 10, Screen.height / 2 - 200, 190, 400));
-            foreach (PhotonPlayer pl in PhotonNetwork.playerList)
+            GUI.color = new Color(1.0f, 1.0f, 1.0f, 0.6f);
+            GUILayout.BeginArea(new Rect(Screen.width / 2 + 5, Screen.height / 2 - 250, 450, 500), skin.box);
+            GUI.color = Color.white;
+
+            GUI.Label(new Rect(0, 7, 450, 30), "", skin.window);
+
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            GUILayout.Label("<b><color=teal>Bleus</color></b>");
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal(skin.label);
+            GUILayout.Label("Name");
+            GUILayout.Space(150);
+            GUILayout.FlexibleSpace();
+            GUILayout.Label("Kills");
+            GUILayout.FlexibleSpace();
+            GUILayout.Label("Deaths");
+            GUILayout.FlexibleSpace();
+            GUILayout.Label("Score");
+            GUILayout.EndHorizontal();
+
+            foreach (PhotonPlayer pl in PunTeams.PlayersPerTeam[PunTeams.Team.blue])
             {
-                if (pl.customProperties["team"].ToString() == "blue")
-                {
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Name: " + pl.name);
-                    GUILayout.Label("Kills: " + pl.customProperties["kills"].ToString());
-                    GUILayout.Label("Deaths: " + pl.customProperties["death"].ToString());
-                    GUILayout.Label("Score: " + pl.GetScore());
-                    GUILayout.EndHorizontal();
-                }
+                GUILayout.BeginHorizontal(skin.label);
+                GUILayout.Label(pl.name);
+                GUILayout.FlexibleSpace();
+                GUILayout.Label(pl.customProperties["kills"].ToString());
+                GUILayout.FlexibleSpace();
+                GUILayout.Label(pl.customProperties["death"].ToString());
+                GUILayout.FlexibleSpace();
+                GUILayout.Label(pl.GetScore() + "");
+                GUILayout.EndHorizontal();
             }
             GUILayout.EndArea();
         }

@@ -8,7 +8,7 @@ public class SyncValues : Photon.MonoBehaviour {
 	}
 	
 	void Update () {
-	
+	    
 	}
 
     void OnGUI()
@@ -17,15 +17,14 @@ public class SyncValues : Photon.MonoBehaviour {
     }
     void OnPhotonPlayerConnected()
     {
-        if (PhotonNetwork.room.playerCount <= 2)
+        if (PhotonNetwork.room.playerCount < 2)
         {
             showMessage.inputMessage("Waiting Other players ...");
-            print("hey");
         }
     }
     void OnPhotonPlayerDisconnected()
     {
-        if (PhotonNetwork.room.playerCount <= 2)
+        if (PhotonNetwork.room.playerCount < 2)
         {
             showMessage.inputMessage("Waiting Other players ..."); 
         }

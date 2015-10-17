@@ -30,6 +30,7 @@ public class RoundTime : PunBehaviour
                 double delta = timeToStart - PhotonNetwork.time;
                 return (delta > 0.0f) ? delta : 0.0f;
             }
+
             else
             {
                 return 0.0f;
@@ -55,12 +56,6 @@ public class RoundTime : PunBehaviour
                 Hashtable timeProps = new Hashtable() { { TimeToStartProp, timeToStart } };
                 PhotonNetwork.room.SetCustomProperties(timeProps);
             }
-
-            if(IsTimeToStartKnown && PhotonNetwork.room.playerCount < 2)
-            {
-                timeToStart = 0.0f;
-                PhotonNetwork.room.customProperties.Clear();
-            }
         }
     }
 
@@ -84,5 +79,15 @@ public class RoundTime : PunBehaviour
         {
             Score.gameState = enumGameState.InGame;
         }
-    } 
+    }
+
+    void OnPhotonPlayerDisconnected()
+    {
+        if (IsTimeToStartKnown && PhotonNetwork.room.playerCount < 2)
+        {
+            timeToStart = 0.0f;
+            PhotonNetwork.room.customProperties.Clear();
+        }
+        showMessage.inputMessage("Waiting Other players ...");
+    }
 }

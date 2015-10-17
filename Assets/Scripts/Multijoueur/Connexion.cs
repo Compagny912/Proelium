@@ -206,7 +206,6 @@ public class Connexion : Photon.MonoBehaviour {
 	}
 
 	void OnJoinedRoom(){
-		score.SendMessage("GetName", pseudoJoueur.ToString());
         isLoadingScene = false;
 	}
 

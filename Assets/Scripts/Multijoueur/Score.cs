@@ -38,6 +38,13 @@ public class Score : Photon.MonoBehaviour {
         {
             CursorGestion.setInMenu();
 
+            ExitGames.Client.Photon.Hashtable infos = new ExitGames.Client.Photon.Hashtable();
+            //infos.Add("team", "");
+            infos.Add("kills", 0);
+            infos.Add("death", 0);
+            PhotonNetwork.player.SetScore(0);
+            PhotonNetwork.player.SetCustomProperties(infos);
+
             GUI.color = new Color(1.0f, 1.0f, 1.0f, 0.6f);
             GUI.Label(new Rect(0, 0, Screen.width, 100), "", skin.customStyles[0]);
             GUI.color = Color.white;
@@ -48,19 +55,15 @@ public class Score : Photon.MonoBehaviour {
             if (GUI.Button(new Rect(Screen.width / 2 - 40, 25, 100, 50), LanguageManager.GetText("equipeRouge"), skin.button))
             {
                 equipe = "rouge";
-                PhotonNetwork.player.customProperties.Add("team", "red");
-                PhotonNetwork.player.customProperties.Add("kills", 0);
-                PhotonNetwork.player.customProperties.Add("death", 0);
-                PhotonNetwork.player.SetScore(0);
+                //PhotonNetwork.player.customProperties["team"] = "red";
+                PhotonNetwork.player.SetTeam(PunTeams.Team.red);
                 chat.SendMessage("Equipe", equipe);
             }
             if (GUI.Button(new Rect(Screen.width / 2 + 65, 25, 100, 50), LanguageManager.GetText("equipeBleu"), skin.button))
             {
                 equipe = "bleu";
-                PhotonNetwork.player.customProperties.Add("team", "blue");
-                PhotonNetwork.player.customProperties.Add("kills", 0);
-                PhotonNetwork.player.customProperties.Add("death", 0);
-                PhotonNetwork.player.SetScore(0);
+                //PhotonNetwork.player.customProperties["team"] = "blue";
+                PhotonNetwork.player.SetTeam(PunTeams.Team.blue);
                 chat.SendMessage("Equipe", equipe);
             }
         }
@@ -116,10 +119,6 @@ public class Score : Photon.MonoBehaviour {
             }
         }
     }
-
-	void GetName(string nom){
-		pseudo = nom;
-	}
 
     [PunRPC]
     void RefreshName(string[] donnee){
