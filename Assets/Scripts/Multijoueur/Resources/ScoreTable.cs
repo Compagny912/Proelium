@@ -73,7 +73,6 @@ public class ScoreTable : MonoBehaviour {
             GUI.color = Color.white;
 
             GUI.Label(new Rect(0, 7, 450, 30), "", skin.window);
-
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
             GUILayout.Label("<b><color=teal>Bleus</color></b>");
