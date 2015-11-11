@@ -70,14 +70,17 @@ public class RoundTime : PunBehaviour
 
     void OnGUI()
     {
-        if (this.SecondsUntilItsTime >= 0.0001f)
+        if (PhotonNetwork.inRoom)
         {
-            Score.gameState = enumGameState.InGameLobby;
-            GUI.Label(new Rect(Screen.width-250, 25, 230, 50), "Temps Restant: " + (int)this.SecondsUntilItsTime, skin.customStyles[0]);
-        }
-        if (IsItTimeYet)
-        {
-            Score.gameState = enumGameState.InGame;
+            if (this.SecondsUntilItsTime >= 0.0001f)
+            {
+                Score.gameState = enumGameState.InGameLobby;
+                GUI.Label(new Rect(Screen.width - 250, 25, 230, 50), "Temps Restant: " + (int)this.SecondsUntilItsTime, skin.customStyles[0]);
+            }
+            if (IsItTimeYet)
+            {
+                Score.gameState = enumGameState.InGame;
+            }
         }
     }
 
@@ -88,6 +91,5 @@ public class RoundTime : PunBehaviour
             timeToStart = 0.0f;
             PhotonNetwork.room.customProperties.Clear();
         }
-        showMessage.inputMessage("Waiting Other players ...");
     }
 }

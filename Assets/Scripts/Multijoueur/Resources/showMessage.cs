@@ -37,7 +37,7 @@ public class showMessage : Photon.MonoBehaviour {
 
         if (alreadyShow)
         {
-            GUI.color = new Color(1.0f, 1.0f, 1.0f, 0.6f);
+            GUI.color = elapsedtime > 0.6 ? new Color(1.0f, 1.0f, 1.0f, 0.6f) : new Color(1.0f, 1.0f, 1.0f, elapsedtime);
             GUI.Label(new Rect(Screen.width / 2 - w / 2, Screen.height / 2 - 20, w, 40), message, style.button);
         }
     }
