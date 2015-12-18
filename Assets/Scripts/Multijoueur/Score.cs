@@ -121,11 +121,11 @@ public class Score : Photon.MonoBehaviour {
     }
 
     [PunRPC]
-    void RefreshName(string[] donnee){
+    void RefreshName(string donnee){
 
         GameObject go;
         
-        go = GameObject.Find(donnee[0]);
-        go.name = donnee[1];
+        go = GameObject.Find(donnee);
+        go.name = donnee;
     }
 }

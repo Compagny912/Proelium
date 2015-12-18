@@ -48,7 +48,7 @@ public class RoundTime : PunBehaviour
             }
 
             // the master client checks if a start time is set. we check a min value
-            if (!IsTimeToStartKnown && PhotonNetwork.time > 0.0001f && PhotonNetwork.room.playerCount >= 2)
+            if (!IsTimeToStartKnown && PhotonNetwork.time > 0.0001f) //&& PhotonNetwork.room.playerCount >= 2
             {
                 // no startTime set for room. calculate and set it as property of this room
                 timeToStart = PhotonNetwork.time + SecondsBeforeStart;
@@ -86,10 +86,9 @@ public class RoundTime : PunBehaviour
 
     void OnPhotonPlayerDisconnected()
     {
-        if (IsTimeToStartKnown && PhotonNetwork.room.playerCount < 2)
-        {
-            timeToStart = 0.0f;
-            PhotonNetwork.room.customProperties.Clear();
-        }
+        //if (IsTimeToStartKnown && PhotonNetwork.room.playerCount < 2)
+        //{
+        //    timeToStart = 0.0f;
+        //}
     }
 }

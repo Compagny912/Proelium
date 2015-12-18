@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 public class CreateServer : Photon.MonoBehaviour {
 	
@@ -9,22 +10,16 @@ public class CreateServer : Photon.MonoBehaviour {
 	private bool isVisible;
     public string nomServeur;
     RoomOptions newRoomOptions;
-    public static string nameMap = "Map1";
-    private bool createFailed;
+    private static string nameMap = "Map1";
+    private static ObscuredString gamemode = "deathmatch";
 
 	void Start () {
-        createFailed = false;
-
         newRoomOptions = new RoomOptions() { isVisible = true, isOpen = true, cleanupCacheOnLeave = true};
         newRoomOptions.maxPlayers = 6;
 	}
 
 	void OnGUI()
 	{
-        if (createFailed)
-        {
-            GUI.Label(new Rect(Screen.width / 2 - 50, Screen.height / 2 - 220, 470, 25), LanguageManager.GetText("randomFailed"), style.label);
-        }
 
         if (Connexion.menu == "creationServeur" && PhotonNetwork.insideLobby == true)
 		{
@@ -79,6 +74,6 @@ public class CreateServer : Photon.MonoBehaviour {
 
     void OnPhotonCreateRoomFailed()
     {
-        createFailed = true;
+        showMessage.inputMessage(LanguageManager.GetText("randomFailed"));
     }
 }

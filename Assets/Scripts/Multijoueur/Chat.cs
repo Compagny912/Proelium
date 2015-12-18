@@ -1,6 +1,5 @@
 using UnityEngine;
 using CodeStage.AntiCheat.ObscuredTypes;
-
 using System.Collections;
 
 public class Chat : Photon.MonoBehaviour {
@@ -18,6 +17,9 @@ public class Chat : Photon.MonoBehaviour {
 	}
 
 	void OnGUI () {
+
+        showMessage.inputMessage(GUI.GetNameOfFocusedControl());
+
 		if(PhotonNetwork.room != null){
 			
 			//CHAT--------------------------------
@@ -33,21 +35,35 @@ public class Chat : Photon.MonoBehaviour {
 			GUI.SetNextControlName ("texte");
 			texteChat = GUI.TextField(new Rect(5, Screen.height-40, 295, 40), texteChat, 50);
 
-            if (Event.current.type == EventType.KeyDown && (Event.current.keyCode == KeyCode.KeypadEnter || Event.current.keyCode == KeyCode.Return))
+            /*
+
+            if(Input.GetKey(KeyCode.T) && GUI.GetNameOfFocusedControl() != "texte")
             {
-                if (!string.IsNullOrEmpty(this.texteChat) || GUI.GetNameOfFocusedControl() == "texte")
+                print("test0");
+                GUI.FocusControl("texte");
+                return;
+            }
+            if(Input.GetKeyDown(KeyCode.Escape) && GUI.GetNameOfFocusedControl() == "texte")
+            {
+                print("test1");
+                GUI.FocusControl(null);
+                return;
+            }
+            if (Input.GetKeyDown(KeyCode.Return) && GUI.GetNameOfFocusedControl() == "texte")
+            {
+                print("test3");
+                GUI.FocusControl(null);
+                if (texteChat != "")
                 {
-                    GUI.FocusControl(null); 
+                    print("test4");
                     texteModifie = pseudo + ": " + texteChat;
                     GetComponent<PhotonView>().RPC("RafraichirChat", PhotonTargets.All, texteModifie);
                     texteChat = "";
                     return;
                 }
-                else
-                {
-                    GUI.FocusControl("texte");
-                }
-			}
+                return;
+               
+            } */ //DOESNT WORK DOESNT WORK DOESNT WORK DOESNT WORK
 		}
 	}
 	
