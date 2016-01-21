@@ -1,7 +1,10 @@
 using UnityEngine;
 using System.Collections;
+using CodeStage.AntiCheat.ObscuredTypes;
 
 public class Attack1 : StateMachineBehaviour {
+
+    private ObscuredFloat time = 0.5f;
 
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         animator.SetBool("onAttack1", true);

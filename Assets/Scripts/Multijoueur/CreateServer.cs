@@ -61,8 +61,8 @@ public class CreateServer : Photon.MonoBehaviour {
 
             if (GUI.Button(new Rect(Screen.width / 2 - 405, Screen.height / 2 + 250, 330, 30), "<color=orange>" + LanguageManager.GetText("createTheRoom") + "</color>", style.button) && newRoomOptions.maxPlayers != 0 && nomServeur.Length >= 2 && this.GetComponent<Connexion>().pseudoJoueur.GetEncrypted().Length >= 3)
             {
-                Connexion.menu = "";
                 Wait.isStart = true;
+                Connexion.menu = "";
                 Connexion.isLoadingScene = true;
                 PhotonNetwork.CreateRoom(nomServeur, newRoomOptions, TypedLobby.Default);
                 PhotonNetwork.LoadLevel(nameMap);
