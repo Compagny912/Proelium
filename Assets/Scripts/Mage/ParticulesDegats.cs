@@ -7,7 +7,7 @@ public class ParticulesDegats : Photon.MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
+
 	}
 	
 	// Update is called once per frame
@@ -19,8 +19,9 @@ public class ParticulesDegats : Photon.MonoBehaviour {
     {
         string[] a = { degats + "", this.gameObject.name };
         other.SendMessage("takeDegats", a, SendMessageOptions.DontRequireReceiver);
-        if(other.tag == "Player" || other.tag == "AI")
+        if(other.tag == "Player")
         {
+            if(GameObject.Find(this.name).GetComponent<VueEtDeplacements>())
             GameObject.Find(this.name).GetComponent<VueEtDeplacements>().touchPlayer();
         }
     }

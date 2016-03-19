@@ -177,6 +177,8 @@ public class VueEtDeplacements : Photon.MonoBehaviour {
             anim.SetBool("Die", true);
             GetComponent<CapsuleCollider>().enabled = false;
             showMessage.inputMessage("%PLAYER% as été tué par " + name + ".");
+            GameObject.Find("Scripts").GetComponent<testscript>().onDeath();
+            StartCoroutine(isOnDeath());
         }
     }
     public void attack1()
@@ -207,5 +209,10 @@ public class VueEtDeplacements : Photon.MonoBehaviour {
     void RefreshName(string futureName, string actualName)
     {
         GameObject.Find(actualName).name = futureName;
+    }
+    IEnumerator isOnDeath()
+    {
+        yield return new WaitForSeconds(2);
+        Destroy(this);
     }
 }

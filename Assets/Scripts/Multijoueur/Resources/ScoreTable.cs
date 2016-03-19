@@ -13,7 +13,6 @@ public class ScoreTable : Photon.MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
     }
 
     public void OnPhotonCustomRoomPropertiesChanged(Hashtable propertiesThatChanged)
@@ -30,6 +29,7 @@ public class ScoreTable : Photon.MonoBehaviour {
 
         if (PhotonNetwork.inRoom)
         {
+
             if (Input.GetKeyDown(KeyCode.Tab))
             {
                 isOpen = true;
@@ -91,6 +91,26 @@ public class ScoreTable : Photon.MonoBehaviour {
                     GUILayout.Label(pl.GetScore() + "");
                     GUILayout.EndHorizontal();
                 }
+                foreach (GameObject pl in GameObject.FindGameObjectsWithTag("Player"))
+                {
+                    if (pl.GetComponent<AI>() && pl.GetComponent<AI>().getTeam() == "blue")
+                    {
+                        GUILayout.BeginHorizontal(skin.label);
+                        string n = pl.name;
+                        while (n.Length < 16)
+                        {
+                            n += " ";
+                        }
+                        GUILayout.Label(n);
+                        GUILayout.FlexibleSpace();
+                        GUILayout.Label(pl.GetComponent<AI>().getKills().ToString());
+                        GUILayout.FlexibleSpace();
+                        GUILayout.Label(pl.GetComponent<AI>().getDeaths().ToString());
+                        GUILayout.FlexibleSpace();
+                        GUILayout.Label(pl.GetComponent<AI>().getScore().ToString());
+                        GUILayout.EndHorizontal();
+                    }
+                }
                 GUILayout.EndArea();
 
                 GUI.color = new Color(1.0f, 1.0f, 1.0f, 0.6f);
@@ -131,6 +151,27 @@ public class ScoreTable : Photon.MonoBehaviour {
                     GUILayout.FlexibleSpace();
                     GUILayout.Label(pl.GetScore() + "");
                     GUILayout.EndHorizontal();
+                }
+
+                foreach (GameObject pl in GameObject.FindGameObjectsWithTag("Player"))
+                {
+                    if (pl.GetComponent<AI>() && pl.GetComponent<AI>().getTeam() == "red")
+                    {
+                        GUILayout.BeginHorizontal(skin.label);
+                        string n = pl.name;
+                        while (n.Length < 16)
+                        {
+                            n += " ";
+                        }
+                        GUILayout.Label(n);
+                        GUILayout.FlexibleSpace();
+                        GUILayout.Label(pl.GetComponent<AI>().getKills().ToString());
+                        GUILayout.FlexibleSpace();
+                        GUILayout.Label(pl.GetComponent<AI>().getDeaths().ToString());
+                        GUILayout.FlexibleSpace();
+                        GUILayout.Label(pl.GetComponent<AI>().getScore().ToString());
+                        GUILayout.EndHorizontal();
+                    }
                 }
                 GUILayout.EndArea();
             }

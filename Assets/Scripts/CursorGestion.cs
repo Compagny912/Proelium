@@ -29,11 +29,9 @@ public class CursorGestion : Photon.MonoBehaviour{
     {
         Cursor.SetCursor(bas, new Vector2(bas.height / 2, bas.width / 2), CursorMode.Auto);
         Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = true;
     }
     public IEnumerator hitPlayer()
     {
-        Cursor.visible = true;
         Cursor.SetCursor(shoot, new Vector2(shoot.height/2, shoot.width/2), CursorMode.Auto);
         yield return new WaitForSeconds(0.3f);
         Cursor.SetCursor(basic, new Vector2(basic.height/2, basic.width/2), CursorMode.Auto);
