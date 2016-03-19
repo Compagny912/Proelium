@@ -8,7 +8,7 @@ public class PauseMenuGUI : Photon.MonoBehaviour {
     public static string pausemenu = "";
     bool isOpenQuality;
     public int sensibility;
-
+    private CursorGestion cursor;
     public Texture isChecked;
     public Texture isNoChecked;
 
@@ -20,6 +20,7 @@ public class PauseMenuGUI : Photon.MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        cursor = GameObject.Find("Scripts").GetComponent<CursorGestion>();
         defaultLanguage = LanguageManager.CurrentLanguage;
 
         sensibility = ObscuredPrefs.GetInt("MouseSensibility");
@@ -43,11 +44,11 @@ public class PauseMenuGUI : Photon.MonoBehaviour {
             {
                 if(Score.gameState == enumGameState.InGame)
                 {
-                    CursorGestion.setInGame();
+                    cursor.setInGame();
                 }
                 else
                 {
-                    CursorGestion.setInMenu();
+                    cursor.setInMenu();
                 }
 
                 pausemenu = "";
@@ -61,7 +62,7 @@ public class PauseMenuGUI : Photon.MonoBehaviour {
             }
             else if (pausemenu == "")
             {
-                CursorGestion.setInMenu();
+                cursor.setInMenu();
                 pausemenu = "pause";
                 Connexion.menu = "";
             }

@@ -12,6 +12,7 @@ public class Score : Photon.MonoBehaviour {
 	public static bool estMort = true;
 	public string pseudo;
 	public GameObject chat;
+    private CursorGestion cursor;
     public Camera cam;
 	public GameObject[] spawn_rouge;
 	public GameObject[] spawn_bleu;
@@ -21,6 +22,7 @@ public class Score : Photon.MonoBehaviour {
     void Start()
     {
         cam = null;
+        cursor = GameObject.Find("Scripts").GetComponent<CursorGestion>();
     }
 
     void Update()
@@ -36,7 +38,7 @@ public class Score : Photon.MonoBehaviour {
 
         if (PhotonNetwork.room != null && equipe == "")
         {
-            CursorGestion.setInMenu();
+            cursor.setInMenu();
 
             ExitGames.Client.Photon.Hashtable infos = new ExitGames.Client.Photon.Hashtable();
             //infos.Add("team", "");
@@ -92,7 +94,7 @@ public class Score : Photon.MonoBehaviour {
                         cam.enabled = false;
                         cam.GetComponent<AudioListener>().enabled = false;
 
-                        CursorGestion.setInGame();
+                        cursor.setInGame();
 
                         GetComponent<PhotonView>().RPC("RefreshName", PhotonTargets.AllBuffered, pseudo);
 
@@ -106,7 +108,7 @@ public class Score : Photon.MonoBehaviour {
                         cam.enabled = false;
                         cam.GetComponent<AudioListener>().enabled = false;
 
-                        CursorGestion.setInGame();
+                        cursor.setInGame();
 
                         GetComponent<PhotonView>().RPC("RefreshName", PhotonTargets.AllBuffered, pseudo);
 

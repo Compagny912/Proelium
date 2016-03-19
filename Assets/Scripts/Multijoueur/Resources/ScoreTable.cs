@@ -9,7 +9,7 @@ public class ScoreTable : Photon.MonoBehaviour {
 
     private bool isOpen;
     public GUISkin skin;
-    ObscuredString gamemode = "gamemode";
+    ObscuredString gamemode = "mme";
 
 	// Use this for initialization
 	void Start () {
@@ -47,7 +47,7 @@ public class ScoreTable : Photon.MonoBehaviour {
             object gamemod;
             PhotonNetwork.room.customProperties.TryGetValue("gm", out gamemod);
 
-            if ((string)gamemod == "mme")
+            if ((string)gamemod != "mcc")
             {
                 GUI.skin = this.skin;
 

@@ -13,6 +13,7 @@ public class Connexion : Photon.MonoBehaviour {
    	public GameObject chat;
 	public GameObject score;
 	public GUISkin style;
+    private CursorGestion cursor;
     public static Language defaultLanguage = Language.French;
 
     private ObscuredString pseudo = "Compagny912";
@@ -30,8 +31,8 @@ public class Connexion : Photon.MonoBehaviour {
     {
         err = 0;
         isLogged = false;
-
-        CursorGestion.setInMenu();
+        cursor = GameObject.Find("Scripts").GetComponent<CursorGestion>();
+        cursor.setInMenu();
 
         switch (PlayerPrefs.GetString("Langage"))
         {
@@ -232,7 +233,7 @@ public class Connexion : Photon.MonoBehaviour {
         ObscuredString pseudo = md5Protection1.Md5Sum(name);
         ObscuredString newpasswd = sha512Protection.SHA512Sum(passwd);
 
-        WWW www = new WWW("http://login.proelium.cf/register.php?user=" + name.ToUpper() + "&passwd=" + pseudo.ToString() + newpasswd.ToString() + "&hash=" + hash.ToString());
+        WWW www = new WWW("http://proelium.cf/login/register.php?user=" + name.ToUpper() + "&passwd=" + pseudo.ToString() + newpasswd.ToString() + "&hash=" + hash.ToString());
         yield return www;
 
         if (www.error == null)
@@ -242,7 +243,7 @@ public class Connexion : Photon.MonoBehaviour {
                 menu = "login";
                 rpasswd = "";
                 passwd = "";
-                CursorGestion.setInMenu();
+                cursor.setInMenu();
                 err = 4;
             }
             if (www.text == "1")
@@ -268,7 +269,7 @@ public class Connexion : Photon.MonoBehaviour {
 
             print("Send...");
 
-            WWW www = new WWW("http://login.proelium.cf/login.php?user=" + name.ToUpper() + "&passwd=" + pseudo.ToString() + newpasswd.ToString() + "&hash=" + hash.ToString());
+            WWW www = new WWW("http://proelium.cf/login/login.php?user=" + name.ToUpper() + "&passwd=" + pseudo.ToString() + newpasswd.ToString() + "&hash=" + hash.ToString());
             yield return www;
 
             if (www.error == null)
@@ -283,7 +284,7 @@ public class Connexion : Photon.MonoBehaviour {
                     isLogged = true;
                     PhotonNetwork.playerName = pseudoJoueur;
                     PhotonNetwork.player.name = pseudoJoueur;
-                    CursorGestion.setInMenu();
+                    cursor.setInMenu();
                 }
                 if (www.text == "1")
                 {
@@ -298,7 +299,7 @@ public class Connexion : Photon.MonoBehaviour {
         else
         {
             err = 0;
-            CursorGestion.setInMenu();
+            cursor.setInMenu();
             pseudoJoueur = name;
             menu = "listeServeurs";
             isLogged = true;

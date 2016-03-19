@@ -19,6 +19,10 @@ public class ParticulesDegats : Photon.MonoBehaviour {
     {
         string[] a = { degats + "", this.gameObject.name };
         other.SendMessage("takeDegats", a, SendMessageOptions.DontRequireReceiver);
+        if(other.tag == "Player" || other.tag == "AI")
+        {
+            GameObject.Find(this.name).GetComponent<VueEtDeplacements>().touchPlayer();
+        }
     }
 
 }

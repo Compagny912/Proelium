@@ -6,11 +6,13 @@ public class ServerList : Photon.MonoBehaviour {
 
     private Vector2 scrollPos = new Vector2();
     private RoomInfo[] roomsList;
+    private CursorGestion cursor;
 
     GUIStyle m_Headline;
 
     void Start()
     {
+        cursor = GameObject.Find("Scripts").GetComponent<CursorGestion>();
         m_Headline = new GUIStyle(Skin.label);
         m_Headline.padding = new RectOffset(Screen.width/2-375, Screen.height/2-250, 0, 0);
     }
@@ -32,7 +34,7 @@ public class ServerList : Photon.MonoBehaviour {
                     Wait.isStart = true;
                     Connexion.menu = "";
                     Connexion.isLoadingScene = true;
-                    CursorGestion.setInvisible();
+                    cursor.setInvisible();
                 }
             }
 
@@ -59,7 +61,7 @@ public class ServerList : Photon.MonoBehaviour {
                             if (PhotonNetwork.inRoom)
                             {
                                 Wait.isStart = true;
-                                CursorGestion.setInvisible();
+                                cursor.setInvisible();
                                 Connexion.menu = "";
                                 Connexion.isLoadingScene = true;
                             }

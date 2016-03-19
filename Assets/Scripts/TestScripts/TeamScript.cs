@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MageControl : MonoBehaviour {
+public class TeamScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {

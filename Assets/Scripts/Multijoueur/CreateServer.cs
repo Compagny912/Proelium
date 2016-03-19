@@ -8,6 +8,7 @@ public class CreateServer : Photon.MonoBehaviour {
 	public RoomOptions roomOptions;
     public Texture[] text;
 	private bool isVisible;
+    private CursorGestion cursor;
     public string nomServeur;
     RoomOptions newRoomOptions;
     private static string nameMap = "Map1";
@@ -16,7 +17,8 @@ public class CreateServer : Photon.MonoBehaviour {
 	void Start () {
         newRoomOptions = new RoomOptions() { isVisible = true, isOpen = true, cleanupCacheOnLeave = true};
         newRoomOptions.maxPlayers = 6;
-	}
+        cursor = GameObject.Find("Scripts").GetComponent<CursorGestion>();
+    }
 
 	void OnGUI()
 	{
@@ -66,7 +68,7 @@ public class CreateServer : Photon.MonoBehaviour {
                 Connexion.isLoadingScene = true;
                 PhotonNetwork.CreateRoom(nomServeur, newRoomOptions, TypedLobby.Default);
                 PhotonNetwork.LoadLevel(nameMap);
-                CursorGestion.setInvisible();
+                cursor.setInvisible();
             }
 
 		}

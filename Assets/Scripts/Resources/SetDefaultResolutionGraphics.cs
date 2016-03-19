@@ -8,11 +8,11 @@ public class SetDefaultResolutionGraphics : Photon.MonoBehaviour {
     public string quality;
     public int qualityInt;
     public static Language defaultLanguage = Language.French;
-
+    private CursorGestion cursor;
 
     // Use this for initialization
     void Start () {
-
+        cursor = GameObject.Find("Scripts").GetComponent<CursorGestion>();
         fullscreen = (PlayerPrefs.GetInt("Fullscreen") == 0) ? false : true;
         quality = PlayerPrefs.GetString("Quality");
 
@@ -21,7 +21,7 @@ public class SetDefaultResolutionGraphics : Photon.MonoBehaviour {
             ObscuredPrefs.SetInt("MouseSensibility", 5);
         }
 
-        CursorGestion.setInvisible();
+        cursor.setInvisible();
 
         //_LANGUAGE_PARAMETER
         switch (PlayerPrefs.GetString("Langage"))

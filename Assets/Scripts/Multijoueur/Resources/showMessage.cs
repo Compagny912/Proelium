@@ -45,6 +45,7 @@ public class showMessage : Photon.MonoBehaviour {
     public static void inputMessage(string msg)
     {
         elapsedtime = timeShowMessage;
+        msg = msg.Replace("%PLAYER%", PhotonNetwork.player.name);
         if (alreadyShow)
         {
             message = msg;
