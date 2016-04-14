@@ -2,8 +2,9 @@
 using ExitGames.Client.Photon;
 using Photon;
 using UnityEngine;
-using System;
 using CodeStage.AntiCheat.ObscuredTypes;
+using System.Collections;
+using System.Collections.Generic;
 
 public class ScoreTable : Photon.MonoBehaviour {
 
@@ -11,11 +12,16 @@ public class ScoreTable : Photon.MonoBehaviour {
     public GUISkin skin;
     ObscuredString gamemode = "mme";
 
-	// Use this for initialization
-	void Start () {
+    ArrayList listRED = new ArrayList();
+    ArrayList listBLUE = new ArrayList();
+    ArrayList listNOTEAM = new ArrayList();
+
+
+    // Use this for initialization
+    void Start () {
     }
 
-    public void OnPhotonCustomRoomPropertiesChanged(Hashtable propertiesThatChanged)
+    public void OnPhotonCustomRoomPropertiesChanged(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
     {
         if (propertiesThatChanged.ContainsKey("gamemode") && PhotonNetwork.inRoom)
         {
@@ -49,6 +55,33 @@ public class ScoreTable : Photon.MonoBehaviour {
 
             if ((string)gamemod != "mcc")
             {
+                listRED.Clear();
+                listBLUE.Clear();
+                foreach (PhotonPlayer pl in PunTeams.PlayersPerTeam[PunTeams.Team.red])
+                {
+                    listRED.Add(pl.GetScore() + " " + pl.name + " " + pl.GetKills() + " " + pl.GetDeaths());
+                }
+                foreach (GameObject pl in GameObject.FindGameObjectsWithTag("Player"))
+                {
+                    if (pl.layer == 18 && pl.GetComponent<AI>())
+                    {
+                        listRED.Add(pl.GetComponent<AI>().getScore() + " " + pl.name + " " + pl.GetComponent<AI>().getKills() + " " + pl.GetComponent<AI>().getDeaths());
+                    }
+                    if (pl.layer == 17 && pl.GetComponent<AI>())
+                    {
+                        listBLUE.Add(pl.GetComponent<AI>().getScore() + " " + pl.name + " " + pl.GetComponent<AI>().getKills() + " " + pl.GetComponent<AI>().getDeaths());
+                    }
+                }
+
+                foreach (PhotonPlayer pl in PunTeams.PlayersPerTeam[PunTeams.Team.blue])
+                {
+                    listBLUE.Add(pl.GetScore() + " " + pl.name + " " + pl.GetKills() + " " + pl.GetDeaths());
+                }
+
+                listRED.Sort();
+                listBLUE.Sort();
+                listRED.Reverse();
+                listBLUE.Reverse();
                 GUI.skin = this.skin;
 
                 GUI.color = new Color(1.0f, 1.0f, 1.0f, 0.6f);
@@ -74,42 +107,23 @@ public class ScoreTable : Photon.MonoBehaviour {
                 GUILayout.Label("Score");
                 GUILayout.EndHorizontal();
 
-                foreach (PhotonPlayer pl in PunTeams.PlayersPerTeam[PunTeams.Team.red])
+                foreach(string s in listRED)
                 {
+                    string[] str = s.Split(' ');
                     GUILayout.BeginHorizontal(skin.label);
-                    string n = pl.name;
+                    string n = str[1];
                     while (n.Length < 16)
                     {
                         n += " ";
                     }
                     GUILayout.Label(n);
                     GUILayout.FlexibleSpace();
-                    GUILayout.Label(pl.customProperties["kills"].ToString());
+                    GUILayout.Label(str[2]);
                     GUILayout.FlexibleSpace();
-                    GUILayout.Label(pl.customProperties["death"].ToString());
+                    GUILayout.Label(str[3]);
                     GUILayout.FlexibleSpace();
-                    GUILayout.Label(pl.GetScore() + "");
+                    GUILayout.Label(str[0]);
                     GUILayout.EndHorizontal();
-                }
-                foreach (GameObject pl in GameObject.FindGameObjectsWithTag("Player"))
-                {
-                    if (pl.GetComponent<AI>() && pl.GetComponent<AI>().getTeam() == "blue")
-                    {
-                        GUILayout.BeginHorizontal(skin.label);
-                        string n = pl.name;
-                        while (n.Length < 16)
-                        {
-                            n += " ";
-                        }
-                        GUILayout.Label(n);
-                        GUILayout.FlexibleSpace();
-                        GUILayout.Label(pl.GetComponent<AI>().getKills().ToString());
-                        GUILayout.FlexibleSpace();
-                        GUILayout.Label(pl.GetComponent<AI>().getDeaths().ToString());
-                        GUILayout.FlexibleSpace();
-                        GUILayout.Label(pl.GetComponent<AI>().getScore().ToString());
-                        GUILayout.EndHorizontal();
-                    }
                 }
                 GUILayout.EndArea();
 
@@ -135,43 +149,23 @@ public class ScoreTable : Photon.MonoBehaviour {
                 GUILayout.Label("Score");
                 GUILayout.EndHorizontal();
 
-                foreach (PhotonPlayer pl in PunTeams.PlayersPerTeam[PunTeams.Team.blue])
+                foreach (string s in listBLUE)
                 {
+                    string[] str = s.Split(' ');
                     GUILayout.BeginHorizontal(skin.label);
-                    string n = pl.name;
+                    string n = str[1];
                     while (n.Length < 16)
                     {
                         n += " ";
                     }
-                    GUILayout.Label(pl.name);
+                    GUILayout.Label(n);
                     GUILayout.FlexibleSpace();
-                    GUILayout.Label(pl.customProperties["kills"].ToString());
+                    GUILayout.Label(str[2]);
                     GUILayout.FlexibleSpace();
-                    GUILayout.Label(pl.customProperties["death"].ToString());
+                    GUILayout.Label(str[3]);
                     GUILayout.FlexibleSpace();
-                    GUILayout.Label(pl.GetScore() + "");
+                    GUILayout.Label(str[0]);
                     GUILayout.EndHorizontal();
-                }
-
-                foreach (GameObject pl in GameObject.FindGameObjectsWithTag("Player"))
-                {
-                    if (pl.GetComponent<AI>() && pl.GetComponent<AI>().getTeam() == "red")
-                    {
-                        GUILayout.BeginHorizontal(skin.label);
-                        string n = pl.name;
-                        while (n.Length < 16)
-                        {
-                            n += " ";
-                        }
-                        GUILayout.Label(n);
-                        GUILayout.FlexibleSpace();
-                        GUILayout.Label(pl.GetComponent<AI>().getKills().ToString());
-                        GUILayout.FlexibleSpace();
-                        GUILayout.Label(pl.GetComponent<AI>().getDeaths().ToString());
-                        GUILayout.FlexibleSpace();
-                        GUILayout.Label(pl.GetComponent<AI>().getScore().ToString());
-                        GUILayout.EndHorizontal();
-                    }
                 }
                 GUILayout.EndArea();
             }

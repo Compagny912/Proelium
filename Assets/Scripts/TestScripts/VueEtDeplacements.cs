@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using CodeStage.AntiCheat.ObscuredTypes;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(AudioSource))]
@@ -18,6 +19,10 @@ public class VueEtDeplacements : Photon.MonoBehaviour {
     private float invertY;
     private float rotationX = 0;
 
+    ///////////////////////////////
+    private GameObject display;
+    ///////////////////////////////
+
     //INITOTHERSPARAMETERS
     public int vie;
     public GameObject cloak;
@@ -33,52 +38,46 @@ public class VueEtDeplacements : Photon.MonoBehaviour {
     public int jumpspeed;
     public float jump = 2;
     private Vector3 d = Vector3.zero;
+    public Camera cam;
 
     void Start () {
-        anim = this.GetComponent<Animator>();
-        sensi = ObscuredPrefs.GetInt("MouseSensibility");
-        invertY = PlayerPrefs.GetInt("InverseAxeY");
-        controller = this.GetComponent<CharacterController>();
-        cursor = GameObject.Find("Scripts").GetComponent<CursorGestion>();
-        cursor.setInGame();
+
+        if (GetComponent<PhotonView>().isMine == false)
+        {
+            GetComponent<CharacterController>().enabled = false;
+
+            pivotCamera.SetActive(false);
+
+            GetComponent<TeamScript>().enabled = false;
+            staff.layer = 9;
+            cloak.layer = 13;
+            squeleton.layer = 13;
+
+            string team = PhotonPlayer.Find(GetComponent<PhotonView>().ownerId).GetTeam().ToString();
+            int intTeam = team == "blue" ? 17 : 18;
+            this.gameObject.layer = intTeam;
+            GetComponent<VueEtDeplacements>().enabled = false;
+        }
+        else if (GetComponent<PhotonView>().isMine == true)
+        {
+            cloak.layer = 11;
+            squeleton.layer = 11;
+            gameObject.layer = 11;
+            squeleton.GetComponent<Renderer>().enabled = false;
+            cloak.GetComponent<Renderer>().enabled = false;
+            staff.layer = 8;
+            display = GameObject.Find("Display2");
+            display.SetActive(false);
+            anim = this.GetComponent<Animator>();
+            sensi = ObscuredPrefs.GetInt("MouseSensibility");
+            invertY = PlayerPrefs.GetInt("InverseAxeY");
+            controller = this.GetComponent<CharacterController>();
+            cursor = GameObject.Find("Scripts").GetComponent<CursorGestion>();
+            cursor.setInGame();
+        }
     }
 	
-	void Update () {
-        if (PhotonNetwork.inRoom)
-        {
-            //A DEPLACER AU FINAL
-            if (GetComponent<PhotonView>().isMine == false)
-            {
-                //MAGE
-                GetComponent<CharacterController>().enabled = false;
-                GetComponent<AudioSource>().enabled = false;
-                
-                //CAMERAS
-                Camera[] cams;
-                cams = GetComponentsInChildren<Camera>();
-                foreach (Camera cam in cams)
-                {
-                    cam.enabled = false;
-                }
-                GetComponentInChildren<FlareLayer>().enabled = false;
-                GetComponentInChildren<GUILayer>().enabled = false;
-                GetComponentInChildren<AudioListener>().enabled = false;
-                staff.layer = 9;
-                cloak.layer = 13;
-                squeleton.layer = 13;
-                this.gameObject.layer = 13;
-                GetComponent<VueEtDeplacements>().enabled = false;
-            }
-            else if (GetComponent<PhotonView>().isMine == true)
-            {
-                cloak.layer = 11;
-                squeleton.layer = 11;
-                this.gameObject.layer = 11;
-                squeleton.GetComponent<Renderer>().enabled = false;
-                cloak.GetComponent<Renderer>().enabled = false;
-                staff.layer = 8;
-            }
-        }
+	void FixedUpdate () {
 
         vie = health;
         float ax;
@@ -161,18 +160,26 @@ public class VueEtDeplacements : Photon.MonoBehaviour {
         health -= int.Parse(a[0]);
         if (health <= 0)
         {
+            anim.SetFloat("AxeX", 0);
+            anim.SetFloat("AxeZ", 0);
+            pivotCamera.GetComponentInChildren<MotionBlur>().enabled = true;
             pivotCamera.transform.SetParent(parentDeathCamera);
             anim.SetBool("Die", true);
-            GetComponent<CapsuleCollider>().enabled = false;
+            PhotonNetwork.player.AddDeaths(1);
+            if (GetComponent<CapsuleCollider>()) GetComponent<CapsuleCollider>().enabled = false;
+            if(GetComponent<SphereCollider>()) GetComponent<SphereCollider>().enabled = false;
             showMessage.inputMessage(this.name + " as été tué par " + a[1] + ".");
+            if(GameObject.Find(a[1]).GetComponent<AI>()) GameObject.Find(a[1]).GetComponent<AI>().kill();
+            StartCoroutine(isOnDeath());
         }
     }
-
+    /*
     public void takeDegats(int damage, string name)
     {
         health -= damage;
         if (health <= 0)
         {
+            PhotonNetwork.player.AddDeaths(1);
             pivotCamera.transform.SetParent(parentDeathCamera);
             anim.SetBool("Die", true);
             GetComponent<CapsuleCollider>().enabled = false;
@@ -181,13 +188,20 @@ public class VueEtDeplacements : Photon.MonoBehaviour {
             StartCoroutine(isOnDeath());
         }
     }
+    */
+    public void kill()
+    {
+        PhotonNetwork.player.AddKills(1);
+        PhotonNetwork.player.AddScore(100);
+    }
+
     public void attack1()
     {
         this.Invoke("onAttack1", 0.5f);
     }
     void onAttack1()
     {
-        GameObject g = PhotonNetwork.Instantiate("MageAttack1", new Vector3(controller.transform.position.x,
+        GameObject g = PhotonNetwork.Instantiate(PhotonNetwork.player.GetTeam() == PunTeams.Team.blue ? "MageAttack1BLUE" : "MageAttack1RED", new Vector3(controller.transform.position.x,
                 controller.transform.position.y + 0.8f,
                 controller.transform.position.z),
             pivotCamera.transform.rotation, 0);
@@ -196,6 +210,10 @@ public class VueEtDeplacements : Photon.MonoBehaviour {
     public void attack2()
     {
         this.Invoke("onAttack2", 0.5f);
+    }
+    public string getTeam()
+    {
+        return PhotonNetwork.player.GetTeam().ToString();
     }
     void onAttack2()
     {
@@ -212,7 +230,9 @@ public class VueEtDeplacements : Photon.MonoBehaviour {
     }
     IEnumerator isOnDeath()
     {
-        yield return new WaitForSeconds(2);
-        Destroy(this);
+        yield return new WaitForSeconds(4);
+        GameObject.Find("Scripts").GetComponent<testscript>().onDeath();
+        display.SetActive(true);
+        Destroy(this.gameObject);
     }
 }

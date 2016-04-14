@@ -11,7 +11,10 @@ public class showMessage : Photon.MonoBehaviour {
     private static string message;
 
     //public string testline;
+    void Start()
+    {
 
+    }
 	void Update () {
         if (alreadyShow && elapsedtime > 0)
         {

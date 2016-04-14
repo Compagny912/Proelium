@@ -2,6 +2,10 @@ using UnityEngine;
 using CodeStage.AntiCheat.ObscuredTypes;
 using System.Collections;
 using System.Text.RegularExpressions;
+using System.Net;
+using System.Collections.Specialized;
+using System.Text;
+using System.IO;
 
 public class Connexion : Photon.MonoBehaviour {
 
@@ -80,7 +84,7 @@ public class Connexion : Photon.MonoBehaviour {
 
                 if (GUI.Button(new Rect(Screen.width / 2 - 405, Screen.height / 2 - 55, 400, 30), LanguageManager.GetText("login"), style.button) && pseudo.GetEncrypted().Length >= 3 && passwd.GetEncrypted().Length != 0)
                 {
-                    StartCoroutine(logIn(pseudo.ToString(), passwd.ToString()));
+                    StartCoroutine(logIn(pseudo, passwd));
                     passwd = "";
                     rpasswd = "";
                 }
@@ -122,7 +126,7 @@ public class Connexion : Photon.MonoBehaviour {
                 }
                 if (GUI.Button(new Rect(Screen.width / 2 - 405, Screen.height / 2 - 55, 400, 30), LanguageManager.GetText("register"), style.button) && pseudo.GetEncrypted().Length >= 3 && pseudo.GetEncrypted().Length <= 16 && isValidPasswd(passwd.ToString()) && isValidUserName(pseudo.ToString()))
                 {
-                    StartCoroutine(registerPlayer(pseudo.ToString(), passwd.ToString()));
+                    StartCoroutine(registerPlayer(pseudo, passwd));
                 }
                 if (GUI.Button(new Rect(Screen.width / 2 - 200, Screen.height / 2 - 10, 400, 30), LanguageManager.GetText("login"), style.button))
                 {
@@ -227,13 +231,55 @@ public class Connexion : Photon.MonoBehaviour {
         return Regex.IsMatch(username, pattern);
     }
 
-    IEnumerator registerPlayer(string name, string passwd)
+    IEnumerator registerPlayer(ObscuredString name, ObscuredString passwd)
     {
-        ObscuredString hash = "3fc10317ff24163cddf54f47fb2838a3029cdbfee119095317d44dfeb73ccef2dbed305a71169521285675b847372056c1ba7584148497365a802bcc16589547";
-        ObscuredString pseudo = md5Protection1.Md5Sum(name);
-        ObscuredString newpasswd = sha512Protection.SHA512Sum(passwd);
+        //ObscuredString hash = "3fc10317ff24163cddf54f47fb2838a3029cdbfee119095317d44dfeb73ccef2dbed305a71169521285675b847372056c1ba7584148497365a802bcc16589547";
+        //ObscuredString pseudo = md5Protection1.Md5Sum(name);
+        //ObscuredString newpasswd = sha512Protection.SHA512Sum(passwd);
 
-        WWW www = new WWW("http://proelium.cf/login/register.php?user=" + name.ToUpper() + "&passwd=" + pseudo.ToString() + newpasswd.ToString() + "&hash=" + hash.ToString());
+        using (var client = new WebClient())
+        {
+            ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+            var request = (HttpWebRequest)WebRequest.Create("https://proelium.cf/register.php");
+
+            var postData = "user=" + name.ToString();
+            postData += "&passwd=" + passwd.ToString();
+            var data = Encoding.ASCII.GetBytes(postData);
+
+            request.Method = "POST";
+            request.ContentType = "application/x-www-form-urlencoded";
+            request.ContentLength = data.Length;
+
+            using (var stream = request.GetRequestStream())
+            {
+                stream.Write(data, 0, data.Length);
+            }
+
+            var response = (HttpWebResponse)request.GetResponse();
+
+            var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+
+            Debug.Log(name.ToString());
+            Debug.Log(passwd.ToString());
+            Debug.Log(responseString);
+
+            if (responseString == "0")
+            {
+                menu = "login";
+                rpasswd = "";
+                passwd = "";
+                cursor.setInMenu();
+                err = 4;
+            }
+            else if (responseString == "1")
+            {
+                err = 5;
+            }
+            yield return true;
+        }
+
+        /*
+        WWW www = new WWW("http://proelium.esy.es/proelium/register.php?user=" + name.ToUpper() + "&passwd=" + pseudo.ToString() + newpasswd.ToString() + "&hash=" + hash.ToString());
         yield return www;
 
         if (www.error == null)
@@ -255,21 +301,65 @@ public class Connexion : Photon.MonoBehaviour {
         {
             Debug.Log(www.error);
         }
+        */
     }
 
 //_LOGIN_//
-    IEnumerator logIn(string name, string passwd)
+    IEnumerator logIn(ObscuredString name, ObscuredString passwd)
     {
         if (withLogin)
         {
 
-            ObscuredString hash = "3fc10317ff24163cddf54f47fb2838a3029cdbfee119095317d44dfeb73ccef2dbed305a71169521285675b847372056c1ba7584148497365a802bcc16589547";
-            ObscuredString pseudo = md5Protection1.Md5Sum(name);
-            ObscuredString newpasswd = sha512Protection.SHA512Sum(passwd);
+            //ObscuredString hash = "3fc10317ff24163cddf54f47fb2838a3029cdbfee119095317d44dfeb73ccef2dbed305a71169521285675b847372056c1ba7584148497365a802bcc16589547";
+            //ObscuredString pseudo = md5Protection1.Md5Sum(name);
+            //ObscuredString newpasswd = sha512Protection.SHA512Sum(passwd);
 
-            print("Send...");
+            using (var client = new WebClient())
+            {
+                ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+                var request = (HttpWebRequest)WebRequest.Create("https://proelium.cf/login.php");
 
-            WWW www = new WWW("http://proelium.cf/login/login.php?user=" + name.ToUpper() + "&passwd=" + pseudo.ToString() + newpasswd.ToString() + "&hash=" + hash.ToString());
+                var postData = "user=" + name.ToString();
+                postData += "&passwd=" + passwd.ToString();
+                var data = Encoding.ASCII.GetBytes(postData);
+
+                request.Method = "POST";
+                request.ContentType = "application/x-www-form-urlencoded";
+                request.ContentLength = data.Length;
+
+                using (var stream = request.GetRequestStream())
+                {
+                    stream.Write(data, 0, data.Length);
+                }
+
+                var response = (HttpWebResponse)request.GetResponse();
+
+                var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+
+                Debug.Log(name.ToString());
+                Debug.Log(passwd.ToString());
+                Debug.Log(responseString);
+
+                if (responseString == "0")
+                {
+                    err = 0;
+                    pseudoJoueur = name;
+                    menu = "listeServeurs";
+                    isLogged = true;
+                    PhotonNetwork.playerName = pseudoJoueur;
+                    PhotonNetwork.player.name = pseudoJoueur;
+                    cursor.setInMenu();
+                }
+                else
+                {
+                    err = 1;
+                }
+                yield return true;
+            }
+            
+            /*
+            WWW www = new WWW("http://proelium.esy.es/proelium/login.php?user=" + name.ToUpper() + "&passwd=" + pseudo.ToString() + newpasswd.ToString() + "&hash=" + hash.ToString());
+            //WWW www = new WWW("https://login.proelium.cf/login.php?user=" + name.ToUpper() + "&passwd=" + motdepassenoncrypté);
             yield return www;
 
             if (www.error == null)
@@ -295,6 +385,7 @@ public class Connexion : Photon.MonoBehaviour {
             {
                 Debug.Log(www.error);
             }
+            */
         }
         else
         {
